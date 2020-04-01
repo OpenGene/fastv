@@ -30,13 +30,23 @@ int main(int argc, char* argv[]){
         return 0;
     }
     cmdline::parser cmd;
-    // input/output
     cmd.add<string>("in1", 'i', "read1 input file name", false, "");
-    cmd.add<string>("out1", 'o', "file name to store read1 with viral sequences", false, "");
     cmd.add<string>("in2", 'I', "read2 input file name", false, "");
+    cmd.add<string>("out1", 'o', "file name to store read1 with viral sequences", false, "");
     cmd.add<string>("out2", 'O', "file name to store read2 with viral sequences", false, "");
     cmd.add<string>("kmer", 'k', "the KMER file in fasta format. Built-in SARS-CoV-2.kmer.fa will be used if this is not specified", false, "");
     cmd.add<string>("genomes", 'g', "the genomes file in fasta format. Built-in SARS-CoV-2.genomes.fa will be used if this is not specified", false, "");
+    cmd.add<float>("positive_threshold", 'p', "the data is considered as POSITIVE with viral sequence, when its mean coverage of unique kmer >= positive_threshold (0.001 ~ 100). 0.1 by default.", false, 0.1);
+
+    // reporting
+    cmd.add<string>("json", 'j', "the json format report file name", false, "fastv.json");
+    cmd.add<string>("html", 'h', "the html format report file name", false, "fastv.html");
+    cmd.add<string>("report_title", 'R', "should be quoted with \' or \", default is \"fastv report\"", false, "fastv report");
+
+    // threading
+    cmd.add<int>("thread", 'w', "worker thread number, default is 2", false, 2);
+
+    // qother I/O
     cmd.add("phred64", '6', "indicate the input is using phred64 scoring (it'll be converted to phred33, so the output will still be phred33)");
     cmd.add<int>("compression", 'z', "compression level for gzip output (1 ~ 9). 1 is fastest, 9 is smallest, default is 4.", false, 4);
     cmd.add("stdin", 0, "input from STDIN. If the STDIN is interleaved paired-end FASTQ, please also add --interleaved_in.");
@@ -116,14 +126,6 @@ int main(int argc, char* argv[]){
     cmd.add<int>("umi_len", 0, "if the UMI is in read1/read2, its length should be provided", false, 0);
     cmd.add<string>("umi_prefix", 0, "if specified, an underline will be used to connect prefix and UMI (i.e. prefix=UMI, UMI=AATTCG, final=UMI_AATTCG). No prefix by default", false, "");
     cmd.add<int>("umi_skip", 0, "if the UMI is in read1/read2, fastv can skip several bases following UMI, default is 0", false, 0);
-    
-    // reporting
-    cmd.add<string>("json", 'j', "the json format report file name", false, "fastv.json");
-    cmd.add<string>("html", 'h', "the html format report file name", false, "fastv.html");
-    cmd.add<string>("report_title", 'R', "should be quoted with \' or \", default is \"fastv report\"", false, "fastv report");
-
-    // threading
-    cmd.add<int>("thread", 'w', "worker thread number, default is 2", false, 2);
 
     
     cmd.parse_check(argc, argv);
@@ -149,6 +151,8 @@ int main(int argc, char* argv[]){
         opt.kmerFile = joinpath(fastvDir, "data/SARS-CoV-2.kmer.fa");
     if(opt.genomeFile.empty())
         opt.genomeFile = joinpath(fastvDir, "data/SARS-CoV-2.genomes.fa");
+
+    opt.positiveThreshold = cmd.get<float>("positive_threshold");
 
     opt.compression = cmd.get<int>("compression");
     opt.readsToProcess = cmd.get<int>("reads_to_process");

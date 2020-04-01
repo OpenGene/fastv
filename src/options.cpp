@@ -167,6 +167,9 @@ bool Options::validate() {
         thread = 16;
     }
 
+    if(positiveThreshold < 0.001 || positiveThreshold > 100)
+        error_exit("coverage threshold (--threshold) should be 0.001 ~ 100, suggest 0.1");
+
     if(trim.front1 < 0 || trim.front1 > 30)
         error_exit("trim_front1 (--trim_front1) should be 0 ~ 30, suggest 0 ~ 4");
 
