@@ -49,3 +49,6 @@ git clone https://github.com/OpenGene/fastv.git
 cd fastv
 make
 ```
+
+## screenshot
+![image](http://www.opengene.org/fastv/fastv.png)   
