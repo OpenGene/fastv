@@ -33,6 +33,9 @@ bool VirusDetector::detect(Read* r) {
     int keylen = mOptions->kmerKeyLen;
     int blankBits = 64 - 2*keylen;
 
+    if(seq.length() < keylen)
+        return false;
+
     bool valid = true;
 
     uint32 start = 0;
@@ -41,7 +44,7 @@ bool VirusDetector::detect(Read* r) {
         start++;
         key = Kmer::seq2uint64(seq, start, keylen-1, valid);
         // reach the tail
-        if(start > seq.length() - keylen)
+        if(start >= seq.length() - keylen)
             return false;
     }
     for(uint32 pos = start; pos < seq.length() - keylen; pos++) {

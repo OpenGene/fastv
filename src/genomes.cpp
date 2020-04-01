@@ -40,6 +40,8 @@ void Genomes::buildKmerTable() {
     bool valid = true;
     for(uint32 i=0; i<mNames.size(); i++) {
         string& seq = mSequences[i];
+        if(seq.length() < keylen)
+            continue;
         // first calculate the first keylen-1 kmer
         // skip the polyA tail
         uint32 start = 0;
@@ -48,7 +50,7 @@ void Genomes::buildKmerTable() {
             start++;
             key = Kmer::seq2uint64(seq, start, keylen-1, valid);
             // reach the tail
-            if(start > seq.length() - keylen - polyATailLen)
+            if(start >= seq.length() - keylen - polyATailLen)
                 return;
         }
         for(uint32 pos = start; pos < seq.length() - keylen - polyATailLen; pos++) {
@@ -76,7 +78,7 @@ void Genomes::buildKmerTable() {
                         key = Kmer::seq2uint64(seq, pos, keylen-1, valid);
                         // reach the tail
                         if(pos >= seq.length() - keylen - polyATailLen)
-                            return;
+                            break;
                     }
                     continue;
             }
