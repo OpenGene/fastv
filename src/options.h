@@ -297,6 +297,8 @@ public:
     bool verbose;
     // the length of KMER, default is 25
     int kmerKeyLen;
+    // the threshold of positive result
+    double positiveThreshold;
 
 };
 

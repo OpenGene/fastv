@@ -44,6 +44,27 @@ void Kmer::report() {
         uint64 kmer64 = iter->first;
         cerr << mNames[kmer64] << ": " << mSequences[kmer64] << ": " << iter->second << endl;
     }
+
+    double meanHit = getMeanHit();
+    cerr << endl;
+    cerr << "Mean coverage: " << meanHit << endl<<endl;
+    if(meanHit >= mOptions->positiveThreshold)
+        cerr << "Result: POSITIVE";
+    else
+        cerr << "Result: NEGATIVE";
+    cerr << " (" << "threshold: " <<  mOptions->positiveThreshold << ")" << endl;
+}
+
+double Kmer::getMeanHit() {
+    if(mKmerHits.size() == 0)
+        return 0.0;
+
+    double total = 0;
+    map<uint64, uint32>::iterator iter;
+    for(iter = mKmerHits.begin(); iter != mKmerHits.end(); iter++) {
+        total += iter->second;
+    }
+    return total / (double) mKmerHits.size();
 }
 
 bool Kmer::add(uint64 kmer64) {

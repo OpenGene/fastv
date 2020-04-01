@@ -298,10 +298,10 @@ string Evaluator::evalAdapterAndReadNumDepreciated(long& readNum) {
     string matchedAdapter = matchKnownAdapter(finalAdapter);
     if(!matchedAdapter.empty()) {
         map<string, string> knownAdapters = getKnownAdapter();
-        cerr << knownAdapters[matchedAdapter] << ": " << matchedAdapter << endl;
+        //cerr << knownAdapters[matchedAdapter] << ": " << matchedAdapter << endl;
         return matchedAdapter;
     } else {
-        cerr << finalAdapter << endl;
+        //cerr << finalAdapter << endl;
         return finalAdapter;
     }
 
@@ -517,11 +517,11 @@ string Evaluator::getAdapterWithSeed(int seed, Read** loadedReads, long records,
     string matchedAdapter = matchKnownAdapter(adapter);
     if(!matchedAdapter.empty()) {
         map<string, string> knownAdapters = getKnownAdapter();
-        cerr << knownAdapters[matchedAdapter] << endl << matchedAdapter << endl;
+        //cerr << knownAdapters[matchedAdapter] << endl << matchedAdapter << endl;
         return matchedAdapter;
     } else {
         if(reachedLeaf) {
-            cerr << adapter << endl;
+            //cerr << adapter << endl;
             return adapter;
         } else {
             return "";

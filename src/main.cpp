@@ -325,10 +325,11 @@ int main(int argc, char* argv[]){
 
     // using evaluator to guess how many reads in total
     if(opt.shallDetectAdapter(false)) {
-        if(!supportEvaluation)
-            cerr << "Adapter auto-detection is disabled for STDIN mode" << endl;
+        if(!supportEvaluation) {
+            //cerr << "Adapter auto-detection is disabled for STDIN mode" << endl;
+        }
         else {
-            cerr << "Detecting adapter sequence for read1..." << endl;
+            //cerr << "Detecting adapter sequence for read1..." << endl;
             string adapt = eva.evalAdapterAndReadNum(readNum, false);
             if(adapt.length() > 60 )
                 adapt.resize(0, 60);
@@ -336,17 +337,18 @@ int main(int argc, char* argv[]){
                 opt.adapter.sequence = adapt;
                 opt.adapter.detectedAdapter1 = adapt;
             } else {
-                cerr << "No adapter detected for read1" << endl;
+                //cerr << "No adapter detected for read1" << endl;
                 opt.adapter.sequence = "";
             }
             cerr << endl;
         }
     }
     if(opt.shallDetectAdapter(true)) {
-        if(!supportEvaluation)
-            cerr << "Adapter auto-detection is disabled for STDIN mode" << endl;
+        if(!supportEvaluation) {
+            //cerr << "Adapter auto-detection is disabled for STDIN mode" << endl;
+        }
         else {
-            cerr << "Detecting adapter sequence for read2..." << endl;
+            //cerr << "Detecting adapter sequence for read2..." << endl;
             string adapt = eva.evalAdapterAndReadNum(readNum, true);
             if(adapt.length() > 60 )
                 adapt.resize(0, 60);
@@ -354,7 +356,7 @@ int main(int argc, char* argv[]){
                 opt.adapter.sequenceR2 = adapt;
                 opt.adapter.detectedAdapter2 = adapt;
             } else {
-                cerr << "No adapter detected for read2" << endl;
+                //cerr << "No adapter detected for read2" << endl;
                 opt.adapter.sequenceR2 = "";
             }
             cerr << endl;

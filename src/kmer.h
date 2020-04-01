@@ -18,6 +18,7 @@ public:
     void init(string filename);
     bool add(uint64 kmer64);
     void report();
+    double getMeanHit();
 
     static uint64 seq2uint64(string& seq, uint32 pos, uint32 len, bool& valid);
 

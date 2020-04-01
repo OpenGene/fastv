@@ -27,6 +27,7 @@ Options::Options(){
     seqLen1 = 151;
     seqLen2 = 151;
     kmerKeyLen = 25;
+    positiveThreshold = 0.1;
 }
 
 void Options::init() {
