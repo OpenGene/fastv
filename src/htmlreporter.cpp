@@ -103,15 +103,13 @@ void HtmlReporter::printSummary(ofstream& ofs, FilterResult* result, Stats* preS
     }
 
     ofs << endl;
-    ofs << "<h1 style='text-align:left;'><a href='https://github.com/OpenGene/fastv' target='_blank' style='color:#663355;text-decoration:none;'>" + mOptions->reportTitle + "</a>"<<endl;
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('summary')><a name='summary'>Summary</a></div>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('summary')><a name='summary'>Data QC Summary</a></div>\n";
     ofs << "<div id='summary'>\n";
 
     ofs << "<div class='subsection_title' onclick=showOrHide('general')>General</div>\n";
     ofs << "<div id='general'>\n";
     ofs << "<table class='summary_table'>\n";
-    outputRow(ofs, "fastv version:", string(FASTP_VER)+ " (<a href='https://github.com/OpenGene/fastv'>https://github.com/OpenGene/fastv</a>)");
     outputRow(ofs, "sequencing:", sequencingInfo);
 
     // report read length change
@@ -140,7 +138,7 @@ void HtmlReporter::printSummary(ofstream& ofs, FilterResult* result, Stats* preS
     ofs << "</table>\n";
     ofs << "</div>\n";
 
-    ofs << "<div class='subsection_title' onclick=showOrHide('before_filtering_summary')>Before filtering</div>\n";
+    ofs << "<div class='subsection_title' onclick=showOrHide('before_filtering_summary')>Original data</div>\n";
     ofs << "<div id='before_filtering_summary'>\n";
     ofs << "<table class='summary_table'>\n";
     outputRow(ofs, "total reads:", formatNumber(pre_total_reads));
@@ -151,7 +149,7 @@ void HtmlReporter::printSummary(ofstream& ofs, FilterResult* result, Stats* preS
     ofs << "</table>\n";
     ofs << "</div>\n";
 
-    ofs << "<div class='subsection_title' onclick=showOrHide('after_filtering_summary')>After filtering</div>\n";
+    ofs << "<div class='subsection_title' onclick=showOrHide('after_filtering_summary')>Clean data used for detecting viral sequences</div>\n";
     ofs << "<div id='after_filtering_summary'>\n";
     ofs << "<table class='summary_table'>\n";
     outputRow(ofs, "total reads:", formatNumber(post_total_reads));
@@ -174,8 +172,8 @@ void HtmlReporter::printSummary(ofstream& ofs, FilterResult* result, Stats* preS
 
     if(result && mOptions->adapterCuttingEnabled()) {
         ofs << "<div class='section_div'>\n";
-        ofs << "<div class='section_title' onclick=showOrHide('adapters')><a name='summary'>Adapters</a></div>\n";
-        ofs << "<div id='adapters'>\n";
+        ofs << "<div class='section_title' onclick=showOrHide('adapters')><a name='summary'>Adapters (click to view)</a></div>\n";
+        ofs << "<div id='adapters' style='display:none'>\n";
 
         result->reportAdapterHtml(ofs, pre_total_bases);
 
@@ -185,8 +183,8 @@ void HtmlReporter::printSummary(ofstream& ofs, FilterResult* result, Stats* preS
 
     if(mOptions->duplicate.enabled) {
         ofs << "<div class='section_div'>\n";
-        ofs << "<div class='section_title' onclick=showOrHide('duplication')><a name='summary'>Duplication</a></div>\n";
-        ofs << "<div id='duplication'>\n";
+        ofs << "<div class='section_title' onclick=showOrHide('duplication')><a name='summary'>Duplication (click to view)</a></div>\n";
+        ofs << "<div id='duplication' style='display:none'>\n";
 
         reportDuplication(ofs);
 
@@ -196,8 +194,8 @@ void HtmlReporter::printSummary(ofstream& ofs, FilterResult* result, Stats* preS
 
     if(mOptions->isPaired()) {
         ofs << "<div class='section_div'>\n";
-        ofs << "<div class='section_title' onclick=showOrHide('insert_size')><a name='summary'>Insert size estimation</a></div>\n";
-        ofs << "<div id='insert_size'>\n";
+        ofs << "<div class='section_title' onclick=showOrHide('insert_size')><a name='summary'>Insert size estimation (click to view)</a></div>\n";
+        ofs << "<div id='insert_size' style='display:none'>\n";
 
         reportInsertSize(ofs, preStats1->getCycles() + preStats2->getCycles() - mOptions->overlapRequire);
 
@@ -322,40 +320,68 @@ void HtmlReporter::reportDuplication(ofstream& ofs) {
     delete[] gc;
 }
 
-void HtmlReporter::report(FilterResult* result, Stats* preStats1, Stats* postStats1, Stats* preStats2, Stats* postStats2) {
+void HtmlReporter::printDetectionResult(ofstream& ofs, Kmer* kmer) {
+    ofs << "<div class='section_div'>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('result')><a name='result'>Result</a></div>\n";
+    ofs << "<div id='result'>\n";
+
+    ofs << "<div class='subsection_title' onclick=showOrHide('detection_result')>Detection Result</div>\n";
+    ofs << "<div id='detection_result'>\n";
+    ofs << "<table class='summary_table'>\n";
+    string result;
+    if(kmer->getMeanHit() >= mOptions->positiveThreshold)
+        result = "<font color='red'><B>POSITIVE<B></font>";
+    else
+        result = "NEGATIVE";
+    outputRow(ofs, "Detection Result:", result);
+    outputRow(ofs, "mean coverage:", to_string(kmer->getMeanHit()));
+    outputRow(ofs, "threshold:", to_string(mOptions->positiveThreshold));
+    outputRow(ofs, "fastv version:", string(FASTP_VER)+ " (<a href='https://github.com/OpenGene/fastv'>https://github.com/OpenGene/fastv</a>)");
+    ofs << "</table>\n";
+
+    ofs << "</div>\n";
+    ofs << "</div>\n";
+    ofs << "</div>\n";
+}
+
+void HtmlReporter::report(VirusDetector* vd, FilterResult* result, Stats* preStats1, Stats* postStats1, Stats* preStats2, Stats* postStats2) {
     ofstream ofs;
     ofs.open(mOptions->htmlFile, ifstream::out);
 
     printHeader(ofs);
 
+    ofs << "<h1 style='text-align:left;'><a href='https://github.com/OpenGene/fastv' target='_blank' style='color:#663355;text-decoration:none;'>" + mOptions->reportTitle + "</a>"<<endl;
+
+    printDetectionResult(ofs, vd->getKmer());
+
     printSummary(ofs, result, preStats1, postStats1, preStats2, postStats2);
 
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('before_filtering')><a name='summary'>Before filtering</a></div>\n";
-    ofs << "<div id='before_filtering'>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('before_filtering')><a name='summary'>Original data (click to view)</a></div>\n";
+    ofs << "<div id='before_filtering'  style='display:none'>\n";
 
     if(preStats1) {
-        preStats1 -> reportHtml(ofs, "Before filtering", "read1");
+        preStats1 -> reportHtml(ofs, "Original data", "read1");
     }
 
     if(preStats2) {
-        preStats2 -> reportHtml(ofs, "Before filtering", "read2");
+        preStats2 -> reportHtml(ofs, "Original data", "read2");
     }
 
     ofs << "</div>\n";
     ofs << "</div>\n";
 
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('after_filtering')><a name='summary'>After filtering</a></div>\n";
-    ofs << "<div id='after_filtering'>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('after_filtering')><a name='summary'>Clean data used for detecting viral sequences (click to view)</a></div>\n";
+    ofs << "<div id='after_filtering'  style='display:none'>\n";
 
     if(postStats1) {  
         string name = "read1";
-        postStats1 -> reportHtml(ofs, "After filtering", name);
+        postStats1 -> reportHtml(ofs, "Clean data used for detecting viral sequences", name);
     }
 
     if(postStats2) {
-        postStats2 -> reportHtml(ofs, "After filtering", "read2");
+        postStats2 -> reportHtml(ofs, "Clean data used for detecting viral sequences", "read2");
     }
 
     ofs << "</div>\n";

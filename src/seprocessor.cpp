@@ -137,7 +137,7 @@ bool SingleEndProcessor::process(){
     // make HTML report
     HtmlReporter hr(mOptions);
     hr.setDupHist(dupHist, dupMeanGC, dupRate);
-    hr.report(finalFilterResult, finalPreStats, finalPostStats);
+    hr.report(mVirusDetector, finalFilterResult, finalPreStats, finalPostStats);
 
     // clean up
     for(int t=0; t<mOptions->thread; t++){

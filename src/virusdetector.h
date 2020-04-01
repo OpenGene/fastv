@@ -20,6 +20,10 @@ public:
     bool scan(string& seq);
     void report();
 
+    Kmer* getKmer() {return mKmer;}
+    Genomes* getGenomes() {return mGenomes;}
+
+
 private:
     Options* mOptions;
     Genomes* mGenomes;

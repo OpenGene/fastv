@@ -165,7 +165,7 @@ bool PairEndProcessor::process(){
     HtmlReporter hr(mOptions);
     hr.setDupHist(dupHist, dupMeanGC, dupRate);
     hr.setInsertHist(mInsertSizeHist, peakInsertSize);
-    hr.report(finalFilterResult, finalPreStats1, finalPostStats1, finalPreStats2, finalPostStats2);
+    hr.report(mVirusDetector, finalFilterResult, finalPreStats1, finalPostStats1, finalPreStats2, finalPostStats2);
 
     // clean up
     for(int t=0; t<mOptions->thread; t++){
