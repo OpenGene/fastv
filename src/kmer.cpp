@@ -24,8 +24,19 @@ void Kmer::init(string filename)
     map<string, string> kmers = mFastaReader->contigs();
     map<string, string>::iterator iter;
 
+    bool initialized = false;
     for(iter = kmers.begin(); iter != kmers.end() ; iter++) {
         string seq = iter->second;
+
+        if(!initialized) {
+            initialized = true;
+            if(mOptions->kmerKeyLen == 0)
+                mOptions->kmerKeyLen = seq.length();
+        }
+        if(seq.length() != mOptions->kmerKeyLen) {
+            cerr << "KMER length must be " << mOptions->kmerKeyLen << ", skipped " << seq << endl;
+            continue;
+        }
         bool valid = true;
         uint64 kmer64 = seq2uint64(seq, 0, seq.length(), valid);
         if(valid) {
@@ -35,6 +46,10 @@ void Kmer::init(string filename)
         } else {
             cerr << iter->first << ": " << seq << " skipped" << endl;
         }
+    }
+
+    if(mKmerHits.size() == 0) {
+        error_exit("No unique KMER specified!");
     }
 }
 
