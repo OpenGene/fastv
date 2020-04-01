@@ -7,6 +7,7 @@
 #include <map>
 #include "fastareader.h"
 #include "options.h"
+#include <fstream>
 
 using namespace std;
 
@@ -22,6 +23,7 @@ public:
     string getPlotX();
     string getPlotY();
     int getKmerCount();
+    void reportJSON(ofstream& ofs);
 
     static uint64 seq2uint64(string& seq, uint32 pos, uint32 len, bool& valid);
 

@@ -129,6 +129,21 @@ int Kmer::getKmerCount() {
     return mKmerHits.size();
 }
 
+void Kmer::reportJSON(ofstream& ofs) {
+    map<uint64, uint32>::iterator iter;
+    int first = true;
+    for(iter = mKmerHits.begin(); iter != mKmerHits.end(); iter++) {
+        if(first) {
+            first = false;
+        } else 
+            ofs << "," << endl;
+
+        uint64 kmer64 = iter->first;
+        ofs << "\"" << mNames[kmer64] << "_" << mSequences[kmer64]<< "\"";
+        ofs << ":" << iter->second;
+    }
+}
+
 uint64 Kmer::seq2uint64(string& seq, uint32 pos, uint32 len, bool& valid) {
     uint64 key = 0;
     for(uint32 i=0; i<len; i++) {

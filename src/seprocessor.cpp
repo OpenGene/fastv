@@ -132,7 +132,7 @@ bool SingleEndProcessor::process(){
     // make JSON report
     JsonReporter jr(mOptions);
     jr.setDupHist(dupHist, dupMeanGC, dupRate);
-    jr.report(finalFilterResult, finalPreStats, finalPostStats);
+    jr.report(mVirusDetector, finalFilterResult, finalPreStats, finalPostStats);
 
     // make HTML report
     HtmlReporter hr(mOptions);

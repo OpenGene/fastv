@@ -21,7 +21,7 @@ void JsonReporter::setInsertHist(long* insertHist, int insertSizePeak) {
 }
 
 extern string command;
-void JsonReporter::report(FilterResult* result, Stats* preStats1, Stats* postStats1, Stats* preStats2, Stats* postStats2) {
+void JsonReporter::report(VirusDetector* vd, FilterResult* result, Stats* preStats1, Stats* postStats1, Stats* preStats2, Stats* postStats2) {
     ofstream ofs;
     ofs.open(mOptions->jsonFile, ifstream::out);
     ofs << "{" << endl;
@@ -65,6 +65,25 @@ void JsonReporter::report(FilterResult* result, Stats* preStats1, Stats* postSta
     long post_total_gc = postStats1->getGCNumber();
     if(postStats2)
         post_total_gc += postStats2->getGCNumber();
+
+    Kmer* kmer = vd->getKmer();
+    string detectionResult;
+    if(kmer->getMeanHit() >= mOptions->positiveThreshold)
+        detectionResult = "POSITIVE";
+    else
+        detectionResult = "NEGATIVE";
+
+    // result
+    ofs << "\t" << "\"result\": {" << endl;
+        ofs << "\t\t" << "\"detection_result\": \"" << detectionResult << "\"," << endl;
+        ofs << "\t\t" << "\"mean_coverage\": " << kmer->getMeanHit() << "," << endl;
+        ofs << "\t\t" << "\"positive_thread\": " << mOptions->positiveThreshold << endl;
+    ofs << "\t" << "}," << endl;
+
+    // unique kmer hits
+    ofs << "\t" << "\"kmer_hits\": {" << endl;
+        kmer->reportJSON(ofs);
+    ofs << "\t" << "}," << endl;
 
     // summary
     ofs << "\t" << "\"summary\": {" << endl;
