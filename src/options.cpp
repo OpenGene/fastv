@@ -94,6 +94,18 @@ bool Options::validate() {
         check_file_valid(in2);
     }
 
+    if(!genomeFile.empty()) {
+        check_file_valid(genomeFile);
+    } else {
+        error_exit("Genomes file should be specified by -g");
+    }
+
+    if(!kmerFile.empty()) {
+        check_file_valid(kmerFile);
+    } else {
+        error_exit("KMER file should be specified by -k");
+    }
+
     // if output to STDOUT, then...
     if(outputToSTDOUT) {
         if(isPaired())

@@ -28,7 +28,7 @@ Output the reads containing target viral sequences
 ```shell
 ./fastv -i R1.fq.gz -I R2.fq.gz -o out.R1.fq.gz -O out.R2.fq.gz
 ```
-Specify the KMER file and genome file manually. If not set, it will the two files in the data folder by default.
+Please make sure the `data` folder is in the same directory as `fastv` executable program, otherwise you have to manually set the KMER file (-k) and genome file (-g) as following:
 ```shell
 ./fastv -i R1.fq.gz -I R2.fq.gz -k data/SARS-CoV-2.kmer.fa -g data/SARS-CoV-2.genomes.fa
 ```

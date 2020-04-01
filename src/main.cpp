@@ -140,12 +140,15 @@ int main(int argc, char* argv[]){
     opt.in2 = cmd.get<string>("in2");
     opt.out1 = cmd.get<string>("out1");
     opt.out2 = cmd.get<string>("out2");
+
+    string fastvProgPath = string(argv[0]);
+    string fastvDir = dirname(fastvProgPath);
     opt.kmerFile = cmd.get<string>("kmer");
     opt.genomeFile = cmd.get<string>("genomes");
     if(opt.kmerFile.empty())
-        opt.kmerFile = "data/SARS-CoV-2.kmer.fa";
+        opt.kmerFile = joinpath(fastvDir, "data/SARS-CoV-2.kmer.fa");
     if(opt.genomeFile.empty())
-        opt.genomeFile = "data/SARS-CoV-2.genomes.fa";
+        opt.genomeFile = joinpath(fastvDir, "data/SARS-CoV-2.genomes.fa");
 
     opt.compression = cmd.get<int>("compression");
     opt.readsToProcess = cmd.get<int>("reads_to_process");

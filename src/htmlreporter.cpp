@@ -351,7 +351,6 @@ void HtmlReporter::printDetectionResult(ofstream& ofs, Kmer* kmer) {
     ofs << "<div class='section_title' onclick=showOrHide('result')><a name='result'>Result</a></div>\n";
     ofs << "<div id='result'>\n";
 
-    ofs << "<div class='subsection_title' onclick=showOrHide('detection_result')>Detection Result</div>\n";
     ofs << "<div id='detection_result'>\n";
     ofs << "<table class='summary_table'>\n";
     string result;
@@ -360,14 +359,14 @@ void HtmlReporter::printDetectionResult(ofstream& ofs, Kmer* kmer) {
     else
         result = "NEGATIVE";
     outputRow(ofs, "Detection Result:", result);
-    outputRow(ofs, "mean coverage:", to_string(kmer->getMeanHit()));
+    outputRow(ofs, "mean coverage (copy):", to_string(kmer->getMeanHit()));
     outputRow(ofs, "threshold:", to_string(mOptions->positiveThreshold));
-    outputRow(ofs, "fastv version:", "fastv v" + string(FASTV_VER)+ " (<a href='https://github.com/OpenGene/fastv'>https://github.com/OpenGene/fastv</a>), " + "An ultra-fast tool for screening <B>COVID-19</B> like viral infectious diseases from sequencing data");
+    outputRow(ofs, "fastv version:", "fastv v" + string(FASTV_VER)+ " (<a href='https://github.com/OpenGene/fastv'>https://github.com/OpenGene/fastv</a>), " + "an ultra-fast tool for screening <B>COVID-19</B> like viral infectious diseases from sequencing data");
     ofs << "</table>\n";
 
     ofs << "</div>\n"; //detection_result
 
-    ofs << "<div class='subsection_title' onclick=showOrHide('kmer_hits_figure')>Unique KMER hits</div>\n";
+    ofs << "<div class='subsection_title'>Unique KMER hits</div>\n";
     reportKmerHits(ofs, kmer);
 
     ofs << "</div>\n"; //result
