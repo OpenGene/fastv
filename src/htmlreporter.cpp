@@ -259,6 +259,32 @@ void HtmlReporter::reportInsertSize(ofstream& ofs, int isizeLimit) {
     delete[] percents;
 }
 
+
+void HtmlReporter::reportKmerHits(ofstream& ofs, Kmer* kmer) {
+    ofs << "<div id='kmer_hist_figure'>\n";
+    ofs << "<div class='figure' id='plot_kmer_hits' style='height:400px;width:98%'></div>\n";
+    ofs << "</div>\n";
+    
+    ofs << "\n<script type=\"text/javascript\">" << endl;
+    string json_str = "var data=[";
+
+    json_str += "{";
+    json_str += "x:[" + kmer->getPlotX() + "],";
+    json_str += "y:[" + kmer->getPlotY() + "],";
+    json_str += "name: 'Hit',";
+    json_str += "type:'bar',";
+    json_str += "line:{color:'rgba(128,0,128,1.0)', width:1}\n";
+    json_str += "}";
+
+    json_str += "];\n";
+
+    json_str += "var layout={title:'Unique KMER hits (" + to_string(kmer->getKmerCount()) + " in total)', xaxis:{tickangle:60, tickfont:{size: 8,color: '#bc6f98'}},yaxis:{title:'Hit'}};\n";
+    json_str += "Plotly.newPlot('plot_kmer_hits', data, layout);\n";
+
+    ofs << json_str;
+    ofs << "</script>" << endl;
+}
+
 void HtmlReporter::reportDuplication(ofstream& ofs) {
 
     ofs << "<div id='duplication_figure'>\n";
@@ -339,9 +365,14 @@ void HtmlReporter::printDetectionResult(ofstream& ofs, Kmer* kmer) {
     outputRow(ofs, "fastv version:", string(FASTP_VER)+ " (<a href='https://github.com/OpenGene/fastv'>https://github.com/OpenGene/fastv</a>)");
     ofs << "</table>\n";
 
-    ofs << "</div>\n";
-    ofs << "</div>\n";
-    ofs << "</div>\n";
+    ofs << "</div>\n"; //detection_result
+
+    ofs << "<div class='subsection_title' onclick=showOrHide('kmer_hist')>Unique KMER hits</div>\n";
+    reportKmerHits(ofs, kmer);
+
+    ofs << "</div>\n"; //result
+
+    ofs << "</div>\n"; // section_div
 }
 
 void HtmlReporter::report(VirusDetector* vd, FilterResult* result, Stats* preStats1, Stats* postStats1, Stats* preStats2, Stats* postStats2) {

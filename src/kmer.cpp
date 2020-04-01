@@ -1,5 +1,7 @@
 #include "kmer.h"
 #include "util.h"
+#include <sstream>
+#include <string.h>
 
 Kmer::Kmer(string filename, Options* opt)
 {
@@ -89,6 +91,42 @@ bool Kmer::add(uint64 kmer64) {
         return true;
     }
     return false;
+}
+
+
+string Kmer::getPlotX() {
+    stringstream ss;
+    map<uint64, uint32>::iterator iter;
+    int first = true;
+    for(iter = mKmerHits.begin(); iter != mKmerHits.end(); iter++) {
+        if(first) {
+            first = false;
+        } else 
+            ss << ",";
+
+        uint64 kmer64 = iter->first;
+        ss << "\"" << mNames[kmer64] << ": " << mSequences[kmer64]<< "\"";
+    }
+    return ss.str();
+}
+
+string Kmer::getPlotY() {
+    stringstream ss;
+    map<uint64, uint32>::iterator iter;
+    int first = true;
+    for(iter = mKmerHits.begin(); iter != mKmerHits.end(); iter++) {
+        if(first) {
+            first = false;
+        } else 
+            ss << ",";
+
+        ss << iter->second;
+    }
+    return ss.str();
+}
+
+int Kmer::getKmerCount() {
+    return mKmerHits.size();
 }
 
 uint64 Kmer::seq2uint64(string& seq, uint32 pos, uint32 len, bool& valid) {

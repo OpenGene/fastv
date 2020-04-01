@@ -19,6 +19,9 @@ public:
     bool add(uint64 kmer64);
     void report();
     double getMeanHit();
+    string getPlotX();
+    string getPlotY();
+    int getKmerCount();
 
     static uint64 seq2uint64(string& seq, uint32 pos, uint32 len, bool& valid);
 
