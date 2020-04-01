@@ -27,7 +27,13 @@ void VirusDetector::report() {
 
 bool VirusDetector::detect(Read* r) {
     string& seq = r->mSeq.mStr;
+    Sequence rSequence = ~(r->mSeq);
+    string& rseq = rSequence.mStr;
 
+    return scan(seq) | scan(rseq);
+}
+
+bool VirusDetector::scan(string& seq) {
     int hitCount = 0;
 
     int keylen = mOptions->kmerKeyLen;

@@ -16,6 +16,7 @@
 #include "overlapanalysis.h"
 #include "writerthread.h"
 #include "duplicate.h"
+#include "virusdetector.h"
 
 
 using namespace std;
@@ -78,6 +79,7 @@ private:
     WriterThread* mLeftWriter;
     WriterThread* mRightWriter;
     Duplicate* mDuplicate;
+    VirusDetector* mVirusDetector;
 };
 
 

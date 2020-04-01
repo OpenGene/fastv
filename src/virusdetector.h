@@ -17,6 +17,7 @@ public:
     VirusDetector(Options* opt);
     ~VirusDetector();
     bool detect(Read* r);
+    bool scan(string& seq);
     void report();
 
 private:

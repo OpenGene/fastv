@@ -112,7 +112,7 @@ bool SingleEndProcessor::process(){
         postStats.push_back(configs[t]->getPostStats1());
     }
 
-    cerr << "Result:"<<endl;
+    cerr << "Unique KMER hits:"<<endl;
     mVirusDetector->report();
 
     int* dupHist = NULL;

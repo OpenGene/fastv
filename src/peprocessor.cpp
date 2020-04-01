@@ -33,6 +33,8 @@ PairEndProcessor::PairEndProcessor(Options* opt){
     if(mOptions->duplicate.enabled) {
         mDuplicate = new Duplicate(mOptions);
     }
+
+    mVirusDetector = new VirusDetector(opt);
 }
 
 PairEndProcessor::~PairEndProcessor() {
@@ -40,6 +42,10 @@ PairEndProcessor::~PairEndProcessor() {
     if(mDuplicate) {
         delete mDuplicate;
         mDuplicate = NULL;
+    }
+    if(mVirusDetector) {
+        delete mVirusDetector;
+        mVirusDetector = NULL;
     }
 }
 
@@ -127,21 +133,8 @@ bool PairEndProcessor::process(){
     Stats* finalPostStats2 = Stats::merge(postStats2);
     FilterResult* finalFilterResult = FilterResult::merge(filterResults);
 
-    cerr << "Read1 before filtering:"<<endl;
-    finalPreStats1->print();
-    cerr << endl;
-    cerr << "Read2 before filtering:"<<endl;
-    finalPreStats2->print();
-    cerr << endl;
-    cerr << "Read1 after filtering:"<<endl;
-    finalPostStats1->print();
-    cerr << endl;
-    cerr << "Read2 aftering filtering:"<<endl;
-    finalPostStats2->print();
-
-    cerr << endl;
-    cerr << "Filtering result:"<<endl;
-    finalFilterResult->print();
+    cerr << "Unique KMER hits:"<<endl;
+    mVirusDetector->report();
 
     int* dupHist = NULL;
     double* dupMeanTlen = NULL;
@@ -309,12 +302,18 @@ bool PairEndProcessor::processPairEnd(ReadPairPack* pack, ThreadConfig* config){
         config->addFilterResult(max(result1, result2), 2);
 
         if( r1 != NULL &&  result1 == PASS_FILTER && r2 != NULL && result2 == PASS_FILTER ) {
+
+            bool found = false;
+            found |= mVirusDetector->detect(r1);
+            found |= mVirusDetector->detect(r2);
             
-            if(mOptions->outputToSTDOUT) {
-                singleOutput += r1->toString() + r2->toString();
-            } else {
-                outstr1 += r1->toString();
-                outstr2 += r2->toString();
+            if(found) {
+                if(mOptions->outputToSTDOUT) {
+                    singleOutput += r1->toString() + r2->toString();
+                } else {
+                    outstr1 += r1->toString();
+                    outstr2 += r2->toString();
+                }
             }
 
             // stats the read after filtering
