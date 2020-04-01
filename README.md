@@ -32,6 +32,9 @@ Please make sure the `data` folder is in the same directory as `fastv` executabl
 ```shell
 ./fastv -i R1.fq.gz -I R2.fq.gz -k data/SARS-CoV-2.kmer.fa -g data/SARS-CoV-2.genomes.fa
 ```
+You can get these two files by http or wget:
+* `SARS-CoV-2.kmer.fa` http://opengene.org/fastv/data/SARS-CoV-2.kmer.fa
+* `SARS-CoV-2.genomes.fa` http://opengene.org/fastv/data/SARS-CoV-2.genomes.fa
 
 # get fastv
 ## download binary 
