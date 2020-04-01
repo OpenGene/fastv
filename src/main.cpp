@@ -16,7 +16,7 @@ mutex logmtx;
 int main(int argc, char* argv[]){
     // display version info if no argument is given
     if(argc == 1) {
-        cerr << "fastv: an ultra-fast all-in-one FASTQ preprocessor" << endl << "version " << FASTP_VER << endl;
+        cerr << "fastv: an ultra-fast all-in-one FASTQ preprocessor" << endl << "version " << FASTV_VER << endl;
         //cerr << "fastv --help to see the help"<<endl;
         //return 0;
     }
@@ -26,7 +26,7 @@ int main(int argc, char* argv[]){
         return 0;
     }
     if (argc == 2 && (strcmp(argv[1], "-v")==0 || strcmp(argv[1], "--version")==0)){
-        cerr << "fastv " << FASTP_VER << endl;
+        cerr << "fastv " << FASTV_VER << endl;
         return 0;
     }
     cmdline::parser cmd;
@@ -381,7 +381,7 @@ int main(int argc, char* argv[]){
     cerr << endl << "JSON report: " << opt.jsonFile << endl;
     cerr << "HTML report: " << opt.htmlFile << endl;
     cerr << endl << command << endl;
-    cerr << "fastv v" << FASTP_VER << ", time used: " << (t2)-t1 << " seconds" << endl;
+    cerr << "fastv v" << FASTV_VER << ", time used: " << (t2)-t1 << " seconds" << endl;
 
     return 0;
 }

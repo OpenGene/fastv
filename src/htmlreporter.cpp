@@ -261,7 +261,7 @@ void HtmlReporter::reportInsertSize(ofstream& ofs, int isizeLimit) {
 
 
 void HtmlReporter::reportKmerHits(ofstream& ofs, Kmer* kmer) {
-    ofs << "<div id='kmer_hist_figure'>\n";
+    ofs << "<div id='kmer_hits_figure'>\n";
     ofs << "<div class='figure' id='plot_kmer_hits' style='height:400px;width:98%'></div>\n";
     ofs << "</div>\n";
     
@@ -362,12 +362,12 @@ void HtmlReporter::printDetectionResult(ofstream& ofs, Kmer* kmer) {
     outputRow(ofs, "Detection Result:", result);
     outputRow(ofs, "mean coverage:", to_string(kmer->getMeanHit()));
     outputRow(ofs, "threshold:", to_string(mOptions->positiveThreshold));
-    outputRow(ofs, "fastv version:", string(FASTP_VER)+ " (<a href='https://github.com/OpenGene/fastv'>https://github.com/OpenGene/fastv</a>)");
+    outputRow(ofs, "fastv version:", "fastv v" + string(FASTV_VER)+ " (<a href='https://github.com/OpenGene/fastv'>https://github.com/OpenGene/fastv</a>), " + "An ultra-fast tool for screening <B>COVID-19</B> like viral infectious diseases from sequencing data");
     ofs << "</table>\n";
 
     ofs << "</div>\n"; //detection_result
 
-    ofs << "<div class='subsection_title' onclick=showOrHide('kmer_hist')>Unique KMER hits</div>\n";
+    ofs << "<div class='subsection_title' onclick=showOrHide('kmer_hits_figure')>Unique KMER hits</div>\n";
     reportKmerHits(ofs, kmer);
 
     ofs << "</div>\n"; //result
@@ -486,6 +486,6 @@ void HtmlReporter::printFooter(ofstream& ofs){
     ofs << "\n</div>" << endl;
     ofs << "<div id='footer'> ";
     ofs << "<p>"<<command<<"</p>";
-    ofs << "fastv " << FASTP_VER << ", at " << getCurrentSystemTime() << " </div>";
+    ofs << "fastv " << FASTV_VER << ", at " << getCurrentSystemTime() << " </div>";
     ofs << "</body></html>";
 }
