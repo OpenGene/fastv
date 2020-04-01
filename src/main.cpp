@@ -34,8 +34,8 @@ int main(int argc, char* argv[]){
     cmd.add<string>("in2", 'I', "read2 input file name", false, "");
     cmd.add<string>("out1", 'o', "file name to store read1 with viral sequences", false, "");
     cmd.add<string>("out2", 'O', "file name to store read2 with viral sequences", false, "");
-    cmd.add<string>("kmer", 'k', "the KMER file in fasta format. Built-in SARS-CoV-2.kmer.fa will be used if this is not specified", false, "");
-    cmd.add<string>("genomes", 'g', "the genomes file in fasta format. Built-in SARS-CoV-2.genomes.fa will be used if this is not specified", false, "");
+    cmd.add<string>("kmer", 'k', "the KMER file in fasta format. data/SARS-CoV-2.kmer.fa will be used if this is not specified", false, "");
+    cmd.add<string>("genomes", 'g', "the genomes file in fasta format. data/SARS-CoV-2.genomes.fa will be used if this is not specified", false, "");
     cmd.add<float>("positive_threshold", 'p', "the data is considered as POSITIVE with viral sequence, when its mean coverage of unique kmer >= positive_threshold (0.001 ~ 100). 0.1 by default.", false, 0.1);
 
     // reporting
