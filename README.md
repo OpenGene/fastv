@@ -1,5 +1,5 @@
 # fastv
-fastv is an ultra-fast tool for detecting viral sequence from sequencing data for detection of viral infectious diseases, like COVID-19
+fastv is an ultra-fast tool to detect viral sequence from sequencing data for detection of viral infectious diseases, like COVID-19
 
 # what's fastv?
 `fastv` is designed to detect SARS-CoV-2 from sequencing data in FASTQ format, but will be also able to detect other viral sequences. `fastv` accepts the input of raw or clean FASTQ files (both SE/PE), performs quality filtering as `fastp` does (cut adapters, remove low quality reads, correct wrong bases), and then scans the clean data for the viral sequences.

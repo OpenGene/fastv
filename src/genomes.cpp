@@ -18,6 +18,7 @@ Genomes::~Genomes()
 }
 
 void Genomes::init() {
+    initLowComplexityKeys();
     map<string, string> genomes = mFastaReader->contigs();
     map<string, string>::iterator iter;
     int total = 0;
@@ -29,6 +30,32 @@ void Genomes::init() {
         if(total >= 1000) {
             cerr << "fastv only supports up to 1000 genomes, other genomes will be skipped." << endl;
             break;
+        }
+    }
+}
+
+void Genomes::initLowComplexityKeys() {
+    int keylen = mOptions->kmerKeyLen;
+    const char bases[4] = {'A', 'T', 'C', 'G'};
+
+    // we consider a key with only two positions of different base as low complexity kmer
+    for(int i=0; i<4; i++) {
+        for(int j=0; j<4; j++) {
+            for(int k=0; k<4; k++) {
+                char origin = bases[i];
+                char diff1 = bases[j];
+                char diff2 = bases[k];
+                for(int p=0; p<keylen; p++) {
+                    for(int q=0; q<keylen; q++) {
+                        string seq(keylen, origin);
+                        seq[p] = diff1;
+                        seq[q] = diff2;
+                        bool valid;
+                        uint64 key = Kmer::seq2uint64(seq, 0, keylen, valid);
+                        mLowComplexityKeys.insert(key);
+                    }
+                }
+            }
         }
     }
 }
@@ -89,10 +116,22 @@ void Genomes::buildKmerTable() {
 }
 
 void Genomes::addKmer(uint64 key, uint32 id, uint32 pos) {
+    // dont add low complexity keys
+    if(mLowComplexityKeys.find(key) != mLowComplexityKeys.end())
+        return;
+
     uint32 data = packIdPos(id, pos);
     if(mKmerTable.count(key) == 0)
         mKmerTable[key] = list<uint32>();
     mKmerTable[key].push_back(data);
+}
+
+bool Genomes::hasKey(uint64 key) {
+    return mKmerTable.count(key) > 0;
+}
+
+void Genomes::align(string& seq) {
+    
 }
 
 void Genomes::cover(int id, uint32 pos, uint32 len) {

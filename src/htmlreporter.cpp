@@ -361,7 +361,7 @@ void HtmlReporter::printDetectionResult(ofstream& ofs, Kmer* kmer) {
     outputRow(ofs, "Detection Result:", result);
     outputRow(ofs, "mean coverage of KMER:", to_string(kmer->getMeanHit()));
     outputRow(ofs, "threshold to be positive:", to_string(mOptions->positiveThreshold));
-    outputRow(ofs, "fastv version:", "fastv v" + string(FASTV_VER)+ " (<a href='https://github.com/OpenGene/fastv'>https://github.com/OpenGene/fastv</a>), " + "an ultra-fast tool for screening <B>COVID-19</B> like viral infectious diseases from sequencing data");
+    outputRow(ofs, "fastv version:", "fastv v" + string(FASTV_VER)+ " (<a href='https://github.com/OpenGene/fastv'>https://github.com/OpenGene/fastv</a>), " + " an ultra-fast tool to detect viral sequence from sequencing data for detection of viral infectious diseases, like COVID-19");
     ofs << "</table>\n";
 
     ofs << "</div>\n"; //detection_result

@@ -43,6 +43,7 @@ bool VirusDetector::scan(string& seq) {
         return false;
 
     bool valid = true;
+    bool needAlignment = false;
 
     uint32 start = 0;
     uint64 key = Kmer::seq2uint64(seq, start, keylen-1, valid);
@@ -85,10 +86,19 @@ bool VirusDetector::scan(string& seq) {
                 continue;
         }
         key = (key << blankBits) >> blankBits;
+
+        // add to genome stats
+        if(!needAlignment && mGenomes->hasKey(key))
+            needAlignment = true;
+
+        // add to Kmer stas
         bool hit = mKmer->add(key);
         if(hit)
             hitCount++;
     }
+
+    if(needAlignment)
+        mGenomes->align(seq);
 
     return hitCount>0;
 }
