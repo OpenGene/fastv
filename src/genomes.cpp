@@ -32,7 +32,7 @@ void Genomes::init() {
     for(iter = genomes.begin(); iter != genomes.end() ; iter++) {
         if(iter->second.size() >= 0xFFFFFF) {
             cerr << "fastv only supports genome size up to 16M, skip " << iter->first << " (" << iter->second.size() << " bp)" << endl;
-            break;
+            continue;
         }
         mNames.push_back(iter->first);
         mTotalEditDistance.push_back(0);
