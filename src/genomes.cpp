@@ -28,8 +28,8 @@ Genomes::~Genomes()
         mBloomFilterArray = NULL;
     }
 
-    cerr << "mMissedCount: " << mMissedCount << endl;
-    cerr << "mHitCount: " << mHitCount << endl;
+    //cerr << "mMissedCount: " << mMissedCount << endl;
+    //cerr << "mHitCount: " << mHitCount << endl;
 }
 
 void Genomes::init() {
@@ -51,8 +51,11 @@ void Genomes::init() {
         mReads.push_back(0);
         mBases.push_back(0);
         mSequences.push_back(iter->second);
-        mCoverage.push_back(vector<uint16>(iter->second.length(), 0));
-        mEditDistance.push_back(vector<float>(iter->second.length(), 0));
+
+        int binNum = (iter->second.length() + 1)/mOptions->statsBinSize;
+        mCoverage.push_back(vector<uint32>(binNum, 0));
+        mEditDistance.push_back(vector<float>(binNum, 0));
+
         mGenomeNum++;
     }
 
@@ -275,8 +278,7 @@ bool Genomes::align(string& seq) {
         mapped |= results[i].mapped;
 
         if(results[i].mapped) {
-            cover(i, results[i].start, results[i].len);
-            mTotalEditDistance[i] += results[i].ed;
+            cover(i, results[i].start, results[i].len, results[i].ed);
 
             if(minED > results[i].ed)
                 minED = results[i].ed;
@@ -322,17 +324,40 @@ void Genomes::report() {
     }
 }
 
-void Genomes::cover(int id, uint32 pos, uint32 len) {
+void Genomes::cover(int id, uint32 pos, uint32 len, uint32 ed) {
     if(id >= mCoverage.size()) {
         error_exit("WRONG id");
     }
 
-    for(uint32 p=pos; p<pos+len && p<mCoverage[id].size(); p++) {
-        mCoverage[id][p]++;
-    }
-
     mReads[id]++;
     mBases[id] += len;
+    mTotalEditDistance[id] += ed;
+
+    int leftBin = pos / mOptions->statsBinSize;
+    int rightBin = (pos+len) / mOptions->statsBinSize;
+
+    if(leftBin == rightBin) {
+        mCoverage[id][leftBin] += len;
+        mEditDistance[id][leftBin] += ed;
+    } else {
+        for(int bin = leftBin; bin<rightBin; bin++) {
+            int left, right;
+            if(bin == leftBin)
+                left = pos;
+            else
+                left = bin * mOptions->statsBinSize;
+
+            if(bin == right)
+                right = pos + len;
+            else
+                right = (bin+1) * mOptions->statsBinSize;
+
+            float proportion = (right - left)/(float)len;
+
+            mCoverage[id][bin] += (right - left);
+            mEditDistance[id][bin] += ed * proportion;
+        }
+    }
 }
 
 uint32 Genomes::packIdPos(uint32 id, uint32 position) {

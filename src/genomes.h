@@ -34,7 +34,7 @@ public:
     Genomes(string fastaFile, Options* opt);
     ~Genomes();
 
-    void cover(int id, uint32 pos, uint32 len);
+    void cover(int id, uint32 pos, uint32 len, uint32 ed);
     bool hasKey(uint64 key);
     bool align(string& seq);
     void report();
@@ -55,7 +55,7 @@ private:
     FastaReader* mFastaReader;
     vector<string> mSequences;
     vector<string> mNames;
-    vector<vector<uint16>> mCoverage;
+    vector<vector<uint32>> mCoverage;
     vector<vector<float>> mEditDistance;
     vector<long> mTotalEditDistance;
     vector<long> mReads;

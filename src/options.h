@@ -299,6 +299,8 @@ public:
     int kmerKeyLen;
     // the threshold of positive result
     double positiveThreshold;
+    // the bin size for stat coverage and edit distance
+    int statsBinSize;
 
 };
 
