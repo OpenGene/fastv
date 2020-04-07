@@ -282,7 +282,7 @@ MapResult Genomes::mapToGenome(string& seq, uint32 seqPos, string& genome, uint3
 void Genomes::report() {
     cerr << endl << "Coverage of genomes:" << endl;
     for(int i=0; i<mGenomeNum; i++) {
-        cerr << mReads[i] << "/" << mBases[i] << "/" << mTotalEditDistance[i] << ": " << mNames[i] << endl;
+        cerr << mReads[i] << " reads/" << mBases[i] << " bases/" << mTotalEditDistance[i] << " mismatches: " << mNames[i] << endl;
     }
 }
 
