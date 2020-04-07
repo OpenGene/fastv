@@ -59,7 +59,7 @@ private:
     vector<long> mTotalEditDistance;
     vector<long> mReads;
     vector<long> mBases;
-    // unit32 = 10 bits genome id + 22 bits positions
+    // unit32 = 8 bits genome id + 24 bits positions
     unordered_map<uint64, list<uint32>> mKmerTable; 
     set<uint64> mLowComplexityKeys;
     Options* mOptions;

@@ -30,6 +30,10 @@ void Genomes::init() {
     map<string, string>::iterator iter;
     mGenomeNum = 0;
     for(iter = genomes.begin(); iter != genomes.end() ; iter++) {
+        if(iter->second.size() >= 0xFFFFFF) {
+            cerr << "fastv only supports genome size up to 16M, skip " << iter->first << " (" << iter->second.size() << " bp)" << endl;
+            break;
+        }
         mNames.push_back(iter->first);
         mTotalEditDistance.push_back(0);
         mReads.push_back(0);
@@ -38,8 +42,8 @@ void Genomes::init() {
         mCoverage.push_back(vector<uint16>(iter->second.length(), 0));
         mEditDistance.push_back(vector<float>(iter->second.length(), 0));
         mGenomeNum++;
-        if(mGenomeNum >= 1000) {
-            cerr << "fastv only supports up to 1000 genomes, other genomes will be skipped." << endl;
+        if(mGenomeNum >= 255) {
+            cerr << "fastv only supports up to 255 genomes, other genomes will be skipped." << endl;
             break;
         }
     }
@@ -209,7 +213,7 @@ bool Genomes::align(string& seq) {
             list<uint32>& gpList = mKmerTable[key];
             list<uint32>::iterator gpIter;
             for(gpIter = gpList.begin(); gpIter != gpList.end(); gpIter++) {
-                // unit32 = 10 bits genome id + 22 bits positions
+                // unit32 = 8 bits genome id + 24 bits positions
                 uint32 gp = *gpIter;
                 uint32 genomeID = 0;
                 uint32 genomePos = 0;
@@ -301,12 +305,12 @@ void Genomes::cover(int id, uint32 pos, uint32 len) {
 
 uint32 Genomes::packIdPos(uint32 id, uint32 position) {
     uint32 data = 0;
-    data |= (id << 22);
+    data |= (id << 24);
     data |= position;
     return data;
 }
 
 void Genomes::unpackIdPos(uint32 data, uint32& id, uint32& pos) {
-    id = data >> 22;
-    pos = data & 0x3FFFFF;
+    id = data >> 24;
+    pos = data & 0xFFFFFF;
 }
