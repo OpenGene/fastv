@@ -48,6 +48,7 @@ private:
     void addKmer(uint64 key, uint32 id, uint32 pos);
     void initLowComplexityKeys();
     MapResult mapToGenome(string& seq, uint32 seqPos, string& genome, uint32 genomePos);
+    void initBloomFilter();
 
 private:
     int mGenomeNum;
@@ -65,6 +66,7 @@ private:
     Options* mOptions;
     long mHitCount;
     long mMissedCount;
+    char* mBloomFilterArray;
 };
 
 

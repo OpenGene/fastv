@@ -3,10 +3,14 @@
 #include "kmer.h"
 #include "editdistance.h"
 
+// we use 512M memory
+const int BLOOM_FILTER_LENGTH = (1<<29);
+
 Genomes::Genomes(string faFile, Options* opt)
 {
     mFastaReader = new FastaReader(faFile);
     mOptions = opt;
+    mBloomFilterArray = NULL;
     mFastaReader->readAll();
     init();
     mMissedCount = 0;
@@ -19,9 +23,13 @@ Genomes::~Genomes()
         delete mFastaReader;
         mFastaReader = NULL;
     }
+    if(mBloomFilterArray) {
+        delete mBloomFilterArray;
+        mBloomFilterArray = NULL;
+    }
 
-    //cerr << "mMissedCount: " << mMissedCount << endl;
-    //cerr << "mHitCount: " << mHitCount << endl;
+    cerr << "mMissedCount: " << mMissedCount << endl;
+    cerr << "mHitCount: " << mHitCount << endl;
 }
 
 void Genomes::init() {
@@ -30,6 +38,10 @@ void Genomes::init() {
     map<string, string>::iterator iter;
     mGenomeNum = 0;
     for(iter = genomes.begin(); iter != genomes.end() ; iter++) {
+        if(mGenomeNum >= 255) {
+            cerr << "fastv only supports up to 255 genomes, other genomes will be skipped." << endl;
+            break;
+        }
         if(iter->second.size() >= 0xFFFFFF) {
             cerr << "fastv only supports genome size up to 16M, skip " << iter->first << " (" << iter->second.size() << " bp)" << endl;
             continue;
@@ -42,13 +54,26 @@ void Genomes::init() {
         mCoverage.push_back(vector<uint16>(iter->second.length(), 0));
         mEditDistance.push_back(vector<float>(iter->second.length(), 0));
         mGenomeNum++;
-        if(mGenomeNum >= 255) {
-            cerr << "fastv only supports up to 255 genomes, other genomes will be skipped." << endl;
-            break;
-        }
     }
 
     buildKmerTable();
+    initBloomFilter();
+}
+
+void Genomes::initBloomFilter() {
+    mBloomFilterArray = new char[BLOOM_FILTER_LENGTH];
+    memset(mBloomFilterArray, 0, BLOOM_FILTER_LENGTH * sizeof(char));
+
+    //update bloom filter array
+    const uint64 bloomFilterFactors[3] = {1713137323, 371371377, 7341234131};
+
+    unordered_map<uint64, list<uint32>>::iterator iter;
+    for(iter = mKmerTable.begin(); iter != mKmerTable.end(); iter++) {
+        uint64 key = iter->first;
+        for(int b=0; b<3; b++) {
+            mBloomFilterArray[(bloomFilterFactors[b] * key) & (BLOOM_FILTER_LENGTH-1) ] = 1;
+        }
+    }
 }
 
 void Genomes::initLowComplexityKeys() {
@@ -144,6 +169,13 @@ void Genomes::addKmer(uint64 key, uint32 id, uint32 pos) {
 }
 
 bool Genomes::hasKey(uint64 key) {
+    // check bloom filter
+    const uint64 bloomFilterFactors[3] = {1713137323, 371371377, 7341234131};
+    for(int b=0; b<3; b++) {
+        if(mBloomFilterArray[(bloomFilterFactors[b] * key) & (BLOOM_FILTER_LENGTH-1)] == 0 )
+            return false;
+    }
+
     bool hit = mKmerTable.find(key) != mKmerTable.end();
     if(hit)
         mHitCount++;
