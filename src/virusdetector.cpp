@@ -23,6 +23,9 @@ void VirusDetector::report() {
     if(mKmer) {
         mKmer->report();
     }
+    if(mGenomes) {
+        mGenomes->report();
+    }
 }
 
 bool VirusDetector::detect(Read* r) {
@@ -73,7 +76,7 @@ bool VirusDetector::scan(string& seq) {
             default:
                 // we have to skip the segments covering this N
                 if(pos >= seq.length() - keylen)
-                    return hitCount>0;
+                    continue;
                 pos++;
                 key = Kmer::seq2uint64(seq, pos, keylen-1, valid);
                 while(valid == false) {
@@ -81,7 +84,7 @@ bool VirusDetector::scan(string& seq) {
                     key = Kmer::seq2uint64(seq, pos, keylen-1, valid);
                     // reach the tail
                     if(pos >= seq.length() - keylen)
-                        return hitCount>0;
+                        continue;
                 }
                 continue;
         }
@@ -97,8 +100,9 @@ bool VirusDetector::scan(string& seq) {
             hitCount++;
     }
 
+    bool wellMapped = false;
     if(needAlignment)
-        mGenomes->align(seq);
+        wellMapped = mGenomes->align(seq);
 
-    return hitCount>0;
+    return hitCount>0 || wellMapped;
 }

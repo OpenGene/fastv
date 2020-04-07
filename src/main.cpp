@@ -44,7 +44,7 @@ int main(int argc, char* argv[]){
     cmd.add<string>("report_title", 'R', "should be quoted with \' or \", default is \"fastv report\"", false, "fastv report");
 
     // threading
-    cmd.add<int>("thread", 'w', "worker thread number, default is 2", false, 2);
+    cmd.add<int>("thread", 'w', "worker thread number, default is 4", false, 4);
 
     // qother I/O
     cmd.add("phred64", '6', "indicate the input is using phred64 scoring (it'll be converted to phred33, so the output will still be phred33)");
