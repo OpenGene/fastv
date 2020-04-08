@@ -66,24 +66,34 @@ void JsonReporter::report(VirusDetector* vd, FilterResult* result, Stats* preSta
     if(postStats2)
         post_total_gc += postStats2->getGCNumber();
 
+    // KMER detection
     Kmer* kmer = vd->getKmer();
-    string detectionResult;
-    if(kmer->getMeanHit() >= mOptions->positiveThreshold)
-        detectionResult = "POSITIVE";
-    else
-        detectionResult = "NEGATIVE";
+    if(kmer) {
+        string detectionResult;
+        if(kmer->getMeanHit() >= mOptions->positiveThreshold)
+            detectionResult = "POSITIVE";
+        else
+            detectionResult = "NEGATIVE";
 
-    // result
-    ofs << "\t" << "\"result\": {" << endl;
-        ofs << "\t\t" << "\"detection_result\": \"" << detectionResult << "\"," << endl;
+        ofs << "\t" << "\"kmer_detection_result\": {" << endl;
+        ofs << "\t\t" << "\"result\": \"" << detectionResult << "\"," << endl;
         ofs << "\t\t" << "\"mean_coverage\": " << kmer->getMeanHit() << "," << endl;
-        ofs << "\t\t" << "\"positive_thread\": " << mOptions->positiveThreshold << endl;
-    ofs << "\t" << "}," << endl;
+        ofs << "\t\t" << "\"positive_thread\": " << mOptions->positiveThreshold << "," << endl;
 
-    // unique kmer hits
-    ofs << "\t" << "\"kmer_hits\": {" << endl;
-        kmer->reportJSON(ofs);
-    ofs << "\t" << "}," << endl;
+        // unique kmer hits
+        ofs << "\t\t" << "\"kmer_hits\": {" << endl;
+            kmer->reportJSON(ofs);
+        ofs << "\t\t" << "}" << endl;
+
+
+        ofs << "\t" << "}," << endl;
+    }
+
+    // KMER detection
+    Genomes* genome = vd->getGenomes();
+    if(genome) {
+        genome->reportJSON(ofs);
+    }
 
     // summary
     ofs << "\t" << "\"summary\": {" << endl;

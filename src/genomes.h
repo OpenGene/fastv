@@ -43,6 +43,7 @@ public:
     bool hasKey(uint64 key);
     bool align(string& seq);
     void report();
+    void reportJSON(ofstream& ofs);
     void reportHtml(ofstream& ofs);
 
     static uint32 packIdPos(uint32 id, uint32 position);

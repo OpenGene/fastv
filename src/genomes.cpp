@@ -333,19 +333,33 @@ void Genomes::report() {
     }
 }
 
-void Genomes::reportHtml(ofstream& ofs) {
-    // get the max length, max depth as xaxis and yaxis ranges
-    uint32 maxLen = 0;
-    uint32 maxDepth = 0;
+void Genomes::reportJSON(ofstream& ofs) {
+    ofs << "\t" << "\"genome_mapping_result\": {" << endl;
+    ofs << "\t\t" << "\"genome_number\": " << mGenomeNum << "," << endl;
+    ofs << "\t\t" << "\"bin_size\": " << mOptions->statsBinSize << "," << endl;
+    ofs << "\t\t" << "\"genome_coverage\": [";
     for(int i=0; i<mGenomeNum; i++) {
-        for(int j=0; j<mCoverage[i].size(); j++) {
-            if(mCoverage[i][j] > maxDepth)
-                maxDepth = mCoverage[i][j];
-        }
-        if(mSequences[i].length() > maxLen)
-            maxLen = mSequences[i].length();
+        string name = mNames[i];
+        long reads = mReads[i];
+        long bases = mBases[i];
+        long totalED = mTotalEditDistance[i];
+        if(i != 0) 
+            ofs << ", " << endl;
+        ofs << "\t\t\t{" << endl;
+        ofs << "\t\t\t\t\"name\":\"" <<  name << "\"," << endl;
+        ofs << "\t\t\t\t\"size\":" <<  mSequences[i].length() << "," << endl;
+        ofs << "\t\t\t\t\"reads\":" <<  reads << "," << endl;
+        ofs << "\t\t\t\t\"bases\":" <<  bases << "," << endl;
+        ofs << "\t\t\t\t\"avg_mismatch_ratio\":" <<  totalED / (double)bases << "," << endl;
+        ofs << "\t\t\t\t\"coverage\":[" <<  getCoverageY(i) << "]," << endl;
+        ofs << "\t\t\t\t\"mismatch_ratios\":[" <<  getEditDistanceY(i) << "]" << endl;
+        ofs << "\t\t\t}";
     }
+    ofs << "\t\t]" << endl;
+    ofs << "\t}," << endl;
+}
 
+void Genomes::reportHtml(ofstream& ofs) {
     ofs << "<div id='genome_coverage' style='display:none;color:white;padding:5px;background-color: rgba(0,0,0,0.6);border:1px dotted #666666;font-size:12px;line-height:15px;'> </div>" << endl;
     ofs << "<script src='http://opengene.org/coverage.js'></script>" << endl;
     ofs << "<script language='javascript'>" << endl;

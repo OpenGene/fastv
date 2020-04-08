@@ -139,7 +139,7 @@ void Kmer::reportJSON(ofstream& ofs) {
             ofs << "," << endl;
 
         uint64 kmer64 = iter->first;
-        ofs << "\t\t\"" << mNames[kmer64] << "_" << mSequences[kmer64]<< "\"";
+        ofs << "\t\t\t\"" << mNames[kmer64] << "_" << mSequences[kmer64]<< "\"";
         ofs << ":" << iter->second;
     }
     ofs << endl;

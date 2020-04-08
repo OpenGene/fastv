@@ -274,7 +274,7 @@ void HtmlReporter::printGenomeCoverage(ofstream& ofs, Genomes* g) {
 
 void HtmlReporter::reportKmerHits(ofstream& ofs, Kmer* kmer) {
     ofs << "<div id='kmer_hits_figure'>\n";
-    ofs << "<div class='figure' id='plot_kmer_hits' style='height:400px;width:98%'></div>\n";
+    ofs << "<div class='figure' id='plot_kmer_hits' style='height:300px;width:98%'></div>\n";
     ofs << "</div>\n";
     
     ofs << "\n<script type=\"text/javascript\">" << endl;
@@ -360,7 +360,7 @@ void HtmlReporter::reportDuplication(ofstream& ofs) {
 
 void HtmlReporter::printDetectionResult(ofstream& ofs, Kmer* kmer) {
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('result')><a name='result'>Result <font size=-2 > (click to show/hide) </font></a></div>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('result')><a name='result'>KMER Detection Result <font size=-2 > (click to show/hide) </font></a></div>\n";
     ofs << "<div id='result'>\n";
 
     ofs << "<div id='detection_result'>\n";
@@ -377,7 +377,6 @@ void HtmlReporter::printDetectionResult(ofstream& ofs, Kmer* kmer) {
 
     ofs << "</div>\n"; //detection_result
 
-    ofs << "<div class='subsection_title'>Unique KMER hits</div>\n";
     reportKmerHits(ofs, kmer);
 
     ofs << "</div>\n"; //result
@@ -418,7 +417,7 @@ void HtmlReporter::report(VirusDetector* vd, FilterResult* result, Stats* preSta
     ofs << "</div>\n";
 
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('after_filtering')><a name='summary'>Clean data used for detecting viral sequences <font size=-2 > (click to show/hide) </font></a></div>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('after_filtering')><a name='summary'>Clean data used for detection <font size=-2 > (click to show/hide) </font></a></div>\n";
     ofs << "<div id='after_filtering'  style='display:none'>\n";
 
     if(postStats1) {  
