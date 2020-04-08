@@ -3,6 +3,7 @@
 #include "kmer.h"
 #include "editdistance.h"
 #include <sstream>
+#include <memory.h>
 
 // we use 512M memory
 const int BLOOM_FILTER_LENGTH = (1<<29);
