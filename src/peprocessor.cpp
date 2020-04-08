@@ -133,7 +133,6 @@ bool PairEndProcessor::process(){
     Stats* finalPostStats2 = Stats::merge(postStats2);
     FilterResult* finalFilterResult = FilterResult::merge(filterResults);
 
-    cerr << "Unique KMER hits:"<<endl;
     mVirusDetector->report();
 
     int* dupHist = NULL;

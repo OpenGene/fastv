@@ -97,14 +97,14 @@ bool Options::validate() {
 
     if(!genomeFile.empty()) {
         check_file_valid(genomeFile);
-    } else {
-        error_exit("Genomes file should be specified by -g");
     }
 
     if(!kmerFile.empty()) {
         check_file_valid(kmerFile);
-    } else {
-        error_exit("KMER file should be specified by -k");
+    }
+
+    if(genomeFile.empty() && kmerFile.empty()) {
+        error_exit("You should at least specify one KMER file (-k) or one Genomes file (-g)"); 
     }
 
     // if output to STDOUT, then...

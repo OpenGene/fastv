@@ -350,7 +350,10 @@ void Genomes::reportJSON(ofstream& ofs) {
         ofs << "\t\t\t\t\"size\":" <<  mSequences[i].length() << "," << endl;
         ofs << "\t\t\t\t\"reads\":" <<  reads << "," << endl;
         ofs << "\t\t\t\t\"bases\":" <<  bases << "," << endl;
-        ofs << "\t\t\t\t\"avg_mismatch_ratio\":" <<  totalED / (double)bases << "," << endl;
+        if(bases == 0)
+            ofs << "\t\t\t\t\"avg_mismatch_ratio\":" <<  0.0 << "," << endl;
+        else
+            ofs << "\t\t\t\t\"avg_mismatch_ratio\":" <<  totalED / (double)bases << "," << endl;
         ofs << "\t\t\t\t\"coverage\":[" <<  getCoverageY(i) << "]," << endl;
         ofs << "\t\t\t\t\"mismatch_ratios\":[" <<  getEditDistanceY(i) << "]" << endl;
         ofs << "\t\t\t}";
@@ -384,7 +387,10 @@ void Genomes::reportHtml(ofstream& ofs) {
         ofs << "\"name\":\"" <<  name << "\"," << endl;
         ofs << "\"reads\":" <<  reads << "," << endl;
         ofs << "\"bases\":" <<  bases << "," << endl;
-        ofs << "\"avg_mismatch_ratio\":" <<  totalED / (double)bases << "," << endl;
+        if(bases == 0)
+            ofs << "\"avg_mismatch_ratio\":" <<  0.0 << "," << endl;
+        else
+            ofs << "\"avg_mismatch_ratio\":" <<  totalED / (double)bases << "," << endl;
         ofs << "\"coverage\":[" <<  getCoverageY(i) << "]," << endl;
         ofs << "\"mismatch_ratios\":[" <<  getEditDistanceY(i) << "]" << endl;
         ofs << "}";

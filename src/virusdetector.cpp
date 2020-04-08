@@ -3,8 +3,17 @@
 VirusDetector::VirusDetector(Options* opt){
     mOptions = opt;
 
-    mKmer = new Kmer(mOptions->kmerFile, opt);
-    mGenomes = new Genomes(mOptions->genomeFile, opt);
+    mKmer = NULL;
+    if(!mOptions->kmerFile.empty())
+        mKmer = new Kmer(mOptions->kmerFile, opt);
+    else {
+        // no KMER file, the kmerKeyLen is not intialized
+        if(mOptions->kmerKeyLen == 0)
+            mOptions->kmerKeyLen = 25;
+    }
+    mGenomes = NULL;
+    if(!mOptions->genomeFile.empty())
+        mGenomes = new Genomes(mOptions->genomeFile, opt);
     mHits = 0;
 }
 
@@ -21,6 +30,7 @@ VirusDetector::~VirusDetector(){
 
 void VirusDetector::report() {
     if(mKmer) {
+        cerr << "Unique KMER hits:"<<endl;
         mKmer->report();
     }
     if(mGenomes) {
@@ -91,17 +101,22 @@ bool VirusDetector::scan(string& seq) {
         key = (key << blankBits) >> blankBits;
 
         // add to genome stats
-        if(!needAlignment && mGenomes->hasKey(key))
+        if(!needAlignment && mGenomes && mGenomes->hasKey(key)) {
             needAlignment = true;
+            if(!mKmer)
+                break;
+        }
 
         // add to Kmer stas
-        bool hit = mKmer->add(key);
-        if(hit)
-            hitCount++;
+        if(mKmer) {
+            bool hit = mKmer->add(key);
+            if(hit)
+                hitCount++;
+        }
     }
 
     bool wellMapped = false;
-    if(needAlignment)
+    if(needAlignment && mGenomes)
         wellMapped = mGenomes->align(seq);
 
     return hitCount>0 || wellMapped;
