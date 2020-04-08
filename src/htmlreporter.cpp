@@ -104,7 +104,7 @@ void HtmlReporter::printSummary(ofstream& ofs, FilterResult* result, Stats* preS
 
     ofs << endl;
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('summary')><a name='summary'>Data QC Summary</a></div>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('summary')><a name='summary'>Data QC Summary <font size=-2 > (click to show/hide) </font></a></div>\n";
     ofs << "<div id='summary'>\n";
 
     ofs << "<div class='subsection_title' onclick=showOrHide('general')>General</div>\n";
@@ -172,7 +172,7 @@ void HtmlReporter::printSummary(ofstream& ofs, FilterResult* result, Stats* preS
 
     if(result && mOptions->adapterCuttingEnabled()) {
         ofs << "<div class='section_div'>\n";
-        ofs << "<div class='section_title' onclick=showOrHide('adapters')><a name='summary'>Adapters (click to view)</a></div>\n";
+        ofs << "<div class='section_title' onclick=showOrHide('adapters')><a name='summary'>Adapters <font size=-2 > (click to show/hide) </font></a></div>\n";
         ofs << "<div id='adapters' style='display:none'>\n";
 
         result->reportAdapterHtml(ofs, pre_total_bases);
@@ -183,7 +183,7 @@ void HtmlReporter::printSummary(ofstream& ofs, FilterResult* result, Stats* preS
 
     if(mOptions->duplicate.enabled) {
         ofs << "<div class='section_div'>\n";
-        ofs << "<div class='section_title' onclick=showOrHide('duplication')><a name='summary'>Duplication (click to view)</a></div>\n";
+        ofs << "<div class='section_title' onclick=showOrHide('duplication')><a name='summary'>Duplication <font size=-2 > (click to show/hide) </font></a></div>\n";
         ofs << "<div id='duplication' style='display:none'>\n";
 
         reportDuplication(ofs);
@@ -194,7 +194,7 @@ void HtmlReporter::printSummary(ofstream& ofs, FilterResult* result, Stats* preS
 
     if(mOptions->isPaired()) {
         ofs << "<div class='section_div'>\n";
-        ofs << "<div class='section_title' onclick=showOrHide('insert_size')><a name='summary'>Insert size estimation (click to view)</a></div>\n";
+        ofs << "<div class='section_title' onclick=showOrHide('insert_size')><a name='summary'>Insert size estimation <font size=-2 > (click to show/hide) </font></a></div>\n";
         ofs << "<div id='insert_size' style='display:none'>\n";
 
         reportInsertSize(ofs, preStats1->getCycles() + preStats2->getCycles() - mOptions->overlapRequire);
@@ -261,7 +261,7 @@ void HtmlReporter::reportInsertSize(ofstream& ofs, int isizeLimit) {
 
 void HtmlReporter::printGenomeCoverage(ofstream& ofs, Genomes* g) {
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('genome_coverage')><a name='result'>Genome Coverages</a></div>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('genome_coverage')><a name='result'>Genome Coverages <font size=-2 > (click to show/hide) </font></a></div>\n";
     ofs << "<div id='genome_coverage'>\n";
 
     g->reportHtml(ofs);
@@ -360,7 +360,7 @@ void HtmlReporter::reportDuplication(ofstream& ofs) {
 
 void HtmlReporter::printDetectionResult(ofstream& ofs, Kmer* kmer) {
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('result')><a name='result'>Result</a></div>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('result')><a name='result'>Result <font size=-2 > (click to show/hide) </font></a></div>\n";
     ofs << "<div id='result'>\n";
 
     ofs << "<div id='detection_result'>\n";
@@ -370,10 +370,9 @@ void HtmlReporter::printDetectionResult(ofstream& ofs, Kmer* kmer) {
         result = "<font color='red'><B>POSITIVE<B></font>";
     else
         result = "NEGATIVE";
-    outputRow(ofs, "Detection Result:", result);
-    outputRow(ofs, "mean coverage of KMER:", to_string(kmer->getMeanHit()));
-    outputRow(ofs, "threshold to be positive:", to_string(mOptions->positiveThreshold));
-    outputRow(ofs, "fastv version:", "fastv v" + string(FASTV_VER)+ " (<a href='https://github.com/OpenGene/fastv'>https://github.com/OpenGene/fastv</a>), " + " an ultra-fast tool to detect viral sequence from sequencing data for detection of viral infectious diseases, like COVID-19");
+    outputRow(ofs, "KMER detection result:", result);
+    outputRow(ofs, "Mean coverage of KMER:", to_string(kmer->getMeanHit()));
+    outputRow(ofs, "Threshold to be positive:", to_string(mOptions->positiveThreshold));
     ofs << "</table>\n";
 
     ofs << "</div>\n"; //detection_result
@@ -392,15 +391,19 @@ void HtmlReporter::report(VirusDetector* vd, FilterResult* result, Stats* preSta
 
     printHeader(ofs);
 
-    ofs << "<h1 style='text-align:left;'><a href='https://github.com/OpenGene/fastv' target='_blank' style='color:#663355;text-decoration:none;'>" + mOptions->reportTitle + "</a>"<<endl;
+    ofs << "<h1 style='text-align:left;'><a href='https://github.com/OpenGene/fastv' target='_blank' style='color:#663355;text-decoration:none;'>" + mOptions->reportTitle + "</a </h1>"<<endl;
+    string intro = "Created by fastv v" + string(FASTV_VER)+ " (<a href='https://github.com/OpenGene/fastv'>https://github.com/OpenGene/fastv</a>), " + " an ultra-fast tool to detect viral sequence from sequencing data for detection of viral infectious diseases, like COVID-19";
+    ofs << "<h6 style='text-align:left;'>" << intro << "</h6>" << endl;
 
-    printDetectionResult(ofs, vd->getKmer());
-    printGenomeCoverage(ofs, vd->getGenomes());
+    if(vd->getKmer()) 
+        printDetectionResult(ofs, vd->getKmer());
+    if(vd->getGenomes()) 
+        printGenomeCoverage(ofs, vd->getGenomes());
 
     printSummary(ofs, result, preStats1, postStats1, preStats2, postStats2);
 
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('before_filtering')><a name='summary'>Original data (click to view)</a></div>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('before_filtering')><a name='summary'>Original data <font size=-2 > (click to show/hide) </font></a></div>\n";
     ofs << "<div id='before_filtering'  style='display:none'>\n";
 
     if(preStats1) {
@@ -415,7 +418,7 @@ void HtmlReporter::report(VirusDetector* vd, FilterResult* result, Stats* preSta
     ofs << "</div>\n";
 
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('after_filtering')><a name='summary'>Clean data used for detecting viral sequences (click to view)</a></div>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('after_filtering')><a name='summary'>Clean data used for detecting viral sequences <font size=-2 > (click to show/hide) </font></a></div>\n";
     ofs << "<div id='after_filtering'  style='display:none'>\n";
 
     if(postStats1) {  
@@ -466,7 +469,7 @@ void HtmlReporter::printCSS(ofstream& ofs){
     ofs << "#footer {text-align:left;padding:15px;color:#ffffff;font-size:10px;background:#663355;font-family:Arail,'Liberation Mono', Menlo, Courier, monospace;}" << endl;
     ofs << ".kmer_table {text-align:center;font-size:8px;padding:2px;}" << endl;
     ofs << ".kmer_table td{text-align:center;font-size:8px;padding:0px;color:#ffffff}" << endl;
-    ofs << ".sub_section_tips {color:#999999;font-size:10px;padding-left:5px;padding-bottom:3px;}" << endl;
+    ofs << ".sub_section_tips {color:#999999;font-size:10px;padding-left:5px;padding-bottom:3px;text-align:left;}" << endl;
     ofs << "</style>" << endl;
 }
 
