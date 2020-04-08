@@ -2,6 +2,7 @@
 #include "util.h"
 #include "kmer.h"
 #include "editdistance.h"
+#include <sstream>
 
 // we use 512M memory
 const int BLOOM_FILTER_LENGTH = (1<<29);
@@ -321,7 +322,109 @@ void Genomes::report() {
     cerr << endl << "Coverage of genomes:" << endl;
     for(int i=0; i<mGenomeNum; i++) {
         cerr << mReads[i] << " reads/" << mBases[i] << " bases/" << mTotalEditDistance[i] << " mismatches: " << mNames[i] << endl;
+        for(int j=0; j<mCoverage[i].size(); j++) {
+            cerr << mCoverage[i][j]/mOptions->statsBinSize << " ";
+        }
+        cerr << endl;
+        for(int j=0; j<mEditDistance[i].size(); j++) {
+            cerr << mEditDistance[i][j]/mOptions->statsBinSize << " ";
+        }
+        cerr << endl;
     }
+}
+
+void Genomes::reportHtml(ofstream& ofs) {
+    // get the max length, max depth as xaxis and yaxis ranges
+    uint32 maxLen = 0;
+    uint32 maxDepth = 0;
+    for(int i=0; i<mGenomeNum; i++) {
+        for(int j=0; j<mCoverage[i].size(); j++) {
+            if(mCoverage[i][j] > maxDepth)
+                maxDepth = mCoverage[i][j];
+        }
+        if(mSequences[i].length() > maxLen)
+            maxLen = mSequences[i].length();
+    }
+
+    ofs << "<div id='genome_coverage' style='display:none;color:white;padding:5px;background-color: rgba(0,0,0,0.6);border:1px dotted #666666;font-size:12px;line-height:15px;'> </div>" << endl;
+    ofs << "<script src='http://opengene.org/coverage.js'></script>" << endl;
+    ofs << "<script language='javascript'>" << endl;
+
+    ofs << "var genome_sizes = [";
+    for(int i=0; i<mGenomeNum; i++) {
+        if(i != 0) 
+            ofs << ", ";
+        ofs << mSequences[i].length();
+    }
+    ofs << "];" << endl;
+
+    ofs << "var genome_coverage_data = [" << endl;
+    for(int i=0; i<mGenomeNum; i++) {
+        string name = mNames[i];
+        long reads = mReads[i];
+        long bases = mBases[i];
+        long totalED = mTotalEditDistance[i];
+        if(i != 0) 
+            ofs << ", " << endl;
+        ofs << "{" << endl;
+        ofs << "\"name\":\"" <<  name << "\"," << endl;
+        ofs << "\"reads\":" <<  reads << "," << endl;
+        ofs << "\"bases\":" <<  bases << "," << endl;
+        ofs << "\"avg_mismatch_ratio\":" <<  totalED / (double)bases << "," << endl;
+        ofs << "\"coverage\":[" <<  getCoverageY(i) << "]," << endl;
+        ofs << "\"mismatch_ratios\":[" <<  getEditDistanceY(i) << "]" << endl;
+        ofs << "}";
+    }
+    ofs << "];" << endl;
+
+    ofs << "var stats_bin = " << mOptions->statsBinSize << "; " << endl;
+
+    ofs << "drawCoverages('genome_coverage', genome_coverage_data, genome_sizes, stats_bin);" << endl;
+
+    ofs << "</script>" << endl;
+
+    ofs << "<div id='maptips' style='display:none;color:white;padding:5px;background-color: rgba(0,0,0,0.6);border:1px dotted #666666;font-size:12px;line-height:15px;'> </div>" << endl;
+}
+
+string Genomes::getPlotX(int id) {
+    stringstream ss;
+    for(int x = 0; x < mCoverage[id].size(); x++) {
+        if(x > 0) 
+            ss << ",";
+
+        ss << x*mOptions->statsBinSize;
+    }
+    return ss.str();
+}
+
+string Genomes::getCoverageY(int id) {
+    stringstream ss;
+    for(int x = 0; x < mCoverage[id].size(); x++) {
+        if(x > 0) 
+            ss << ",";
+
+        if(x < mCoverage[id].size() - 1)
+            ss  << (double)mCoverage[id][x] / (double)mOptions->statsBinSize ;
+        else if(mSequences[id].length() - x * mOptions->statsBinSize == 0)
+            ss << "0.0";
+        else
+            ss  << (double)mCoverage[id][x] / (mSequences[id].length() - x * mOptions->statsBinSize) ;
+    }
+    return ss.str();
+}
+
+string Genomes::getEditDistanceY(int id) {
+    stringstream ss;
+    for(int x = 0; x < mCoverage[id].size(); x++) {
+        if(x > 0) 
+            ss << ",";
+
+        if(mCoverage[id][x] > 0)
+            ss  << (double)mEditDistance[id][x] / (double)mCoverage[id][x] ;
+        else
+            ss << "0.0";
+    }
+    return ss.str();
 }
 
 void Genomes::cover(int id, uint32 pos, uint32 len, uint32 ed) {
@@ -337,8 +440,10 @@ void Genomes::cover(int id, uint32 pos, uint32 len, uint32 ed) {
     int rightBin = (pos+len) / mOptions->statsBinSize;
 
     if(leftBin == rightBin) {
-        mCoverage[id][leftBin] += len;
-        mEditDistance[id][leftBin] += ed;
+        if(leftBin < mCoverage[id].size()) {
+            mCoverage[id][leftBin] += len;
+            mEditDistance[id][leftBin] += ed;
+        }
     } else {
         for(int bin = leftBin; bin<rightBin; bin++) {
             int left, right;
@@ -354,8 +459,10 @@ void Genomes::cover(int id, uint32 pos, uint32 len, uint32 ed) {
 
             float proportion = (right - left)/(float)len;
 
-            mCoverage[id][bin] += (right - left);
-            mEditDistance[id][bin] += ed * proportion;
+            if(bin < mCoverage[id].size()) {
+                mCoverage[id][bin] += (right - left);
+                mEditDistance[id][bin] += ed * proportion;
+            }
         }
     }
 }

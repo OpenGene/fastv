@@ -2,6 +2,11 @@
 #define GENOMES_H
 
 // includes
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <fstream>
 #include "common.h"
 #include "fastareader.h"
 #include <vector>
@@ -38,6 +43,7 @@ public:
     bool hasKey(uint64 key);
     bool align(string& seq);
     void report();
+    void reportHtml(ofstream& ofs);
 
     static uint32 packIdPos(uint32 id, uint32 position);
     static void unpackIdPos(uint32 data,uint32& id, uint32& pos);
@@ -49,6 +55,9 @@ private:
     void initLowComplexityKeys();
     MapResult mapToGenome(string& seq, uint32 seqPos, string& genome, uint32 genomePos);
     void initBloomFilter();
+    string getPlotX(int id);
+    string getCoverageY(int id);
+    string getEditDistanceY(int id);
 
 private:
     int mGenomeNum;

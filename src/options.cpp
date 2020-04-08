@@ -28,7 +28,7 @@ Options::Options(){
     seqLen2 = 151;
     kmerKeyLen = 0;
     positiveThreshold = 0.1;
-    statsBinSize = 1000;
+    statsBinSize = 100;
 }
 
 void Options::init() {

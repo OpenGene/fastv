@@ -259,6 +259,18 @@ void HtmlReporter::reportInsertSize(ofstream& ofs, int isizeLimit) {
     delete[] percents;
 }
 
+void HtmlReporter::printGenomeCoverage(ofstream& ofs, Genomes* g) {
+    ofs << "<div class='section_div'>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('genome_coverage')><a name='result'>Genome Coverages</a></div>\n";
+    ofs << "<div id='genome_coverage'>\n";
+
+    g->reportHtml(ofs);
+
+    ofs << "</div>\n"; //result
+
+    ofs << "</div>\n"; // section_div
+}
+
 
 void HtmlReporter::reportKmerHits(ofstream& ofs, Kmer* kmer) {
     ofs << "<div id='kmer_hits_figure'>\n";
@@ -383,6 +395,7 @@ void HtmlReporter::report(VirusDetector* vd, FilterResult* result, Stats* preSta
     ofs << "<h1 style='text-align:left;'><a href='https://github.com/OpenGene/fastv' target='_blank' style='color:#663355;text-decoration:none;'>" + mOptions->reportTitle + "</a>"<<endl;
 
     printDetectionResult(ofs, vd->getKmer());
+    printGenomeCoverage(ofs, vd->getGenomes());
 
     printSummary(ofs, result, preStats1, postStats1, preStats2, postStats2);
 
@@ -458,7 +471,7 @@ void HtmlReporter::printCSS(ofstream& ofs){
 }
 
 void HtmlReporter::printJS(ofstream& ofs){
-    ofs << "<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>" << endl;
+    ofs << "<script src='http://opengene.org/plotly-1.2.0.min.js'></script>" << endl;
     ofs << "\n<script type=\"text/javascript\">" << endl;
     ofs << "    function showOrHide(divname) {" << endl;
     ofs << "        div = document.getElementById(divname);" << endl;

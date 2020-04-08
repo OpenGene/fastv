@@ -35,6 +35,7 @@ private:
     void reportInsertSize(ofstream& ofs, int isizeLimit);
     void printSummary(ofstream& ofs, FilterResult* result, Stats* preStats1, Stats* postStats1, Stats* preStats2, Stats* postStats2);
     void printDetectionResult(ofstream& ofs, Kmer* kmer);
+    void printGenomeCoverage(ofstream& ofs, Genomes* g);
     void reportKmerHits(ofstream& ofs, Kmer* kmer);
     
 private:
