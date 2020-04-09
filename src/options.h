@@ -299,6 +299,8 @@ public:
     int kmerKeyLen;
     // the threshold of positive result
     double positiveThreshold;
+    // the threshold of depth for a region considered as covered
+    double depthThreshold;
     // the bin size for stat coverage and edit distance
     int statsBinSize;
 

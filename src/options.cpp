@@ -28,7 +28,8 @@ Options::Options(){
     seqLen2 = 151;
     kmerKeyLen = 0;
     positiveThreshold = 0.1;
-    statsBinSize = 100;
+    depthThreshold = 1.0;
+    statsBinSize = 0;
 }
 
 void Options::init() {
@@ -169,7 +170,10 @@ bool Options::validate() {
     }
 
     if(positiveThreshold < 0.001 || positiveThreshold > 100)
-        error_exit("coverage threshold (--threshold) should be 0.001 ~ 100, suggest 0.1");
+        error_exit("positive threshold (-p) should be 0.001 ~ 100, suggest 0.1");
+
+    if(depthThreshold < 0.001 || depthThreshold > 1000)
+        error_exit("depth threshold (-d) should be 0.001 ~ 1000, suggest 1");
 
     if(trim.front1 < 0 || trim.front1 > 30)
         error_exit("trim_front1 (--trim_front1) should be 0 ~ 30, suggest 0 ~ 4");

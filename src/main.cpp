@@ -16,7 +16,7 @@ mutex logmtx;
 int main(int argc, char* argv[]){
     // display version info if no argument is given
     if(argc == 1) {
-        cerr << "fastv: an ultra-fast tool to detect viral sequence from sequencing data for detection of viral infectious diseases, like COVID-19." << endl << "version " << FASTV_VER << endl;
+        cerr << "fastv: an ultra-fast tool to detect microbial sequence from sequencing data. This tool can be used to detect viral infectious diseases, like COVID-19." << endl << "version " << FASTV_VER << endl;
         //cerr << "fastv --help to see the help"<<endl;
         //return 0;
     }
@@ -32,11 +32,13 @@ int main(int argc, char* argv[]){
     cmdline::parser cmd;
     cmd.add<string>("in1", 'i', "read1 input file name", false, "");
     cmd.add<string>("in2", 'I', "read2 input file name", false, "");
-    cmd.add<string>("out1", 'o', "file name to store read1 with viral sequences", false, "");
-    cmd.add<string>("out2", 'O', "file name to store read2 with viral sequences", false, "");
-    cmd.add<string>("kmer", 'k', "the KMER file in fasta format. data/SARS-CoV-2.kmer.fa will be used if KMER file (-k) nor Genomes file (-g) is specified", false, "");
-    cmd.add<string>("genomes", 'g', "the genomes file in fasta format. data/SARS-CoV-2.genomes.fa will be used if KMER file (-k) nor Genomes file (-g) is specified", false, "");
-    cmd.add<float>("positive_threshold", 'p', "the data is considered as POSITIVE with viral sequence, when its mean coverage of unique kmer >= positive_threshold (0.001 ~ 100). 0.1 by default.", false, 0.1);
+    cmd.add<string>("out1", 'o', "file name to store read1 with on-target sequences", false, "");
+    cmd.add<string>("out2", 'O', "file name to store read2 with on-target sequences", false, "");
+    cmd.add<string>("kmer", 'k', "the unique KMER file in fasta format. data/SARS-CoV-2.kmer.fa will be used if neither KMER file (-k) nor Genomes file (-g) is specified", false, "");
+    cmd.add<string>("genomes", 'g', "the Genomes file in fasta format. data/SARS-CoV-2.genomes.fa will be used if neither KMER file (-k) nor Genomes file (-g) is specified", false, "");
+    cmd.add<float>("positive_threshold", 'p', "the data is considered as POSITIVE, when its mean coverage of unique kmer >= positive_threshold (0.001 ~ 100). 0.1 by default.", false, 0.1);
+    cmd.add<float>("depth_threshold", 'd', "For coverage calculation. A region is considered covered when its mean depth >= depth_threshold (0.001 ~ 1000). 1.0 by default.", false, 1.0);
+    cmd.add<int>("bin_size", 0, "For coverage calculation. The genome is split to many bins, with the size of each bin is bin_size (1 ~ 100000), default 0 means adaptive.", false, 0);
 
     // reporting
     cmd.add<string>("json", 'j', "the json format report file name", false, "fastv.json");
@@ -173,6 +175,8 @@ int main(int argc, char* argv[]){
     }
 
     opt.positiveThreshold = cmd.get<float>("positive_threshold");
+    opt.depthThreshold = cmd.get<float>("depth_threshold");
+    opt.statsBinSize = cmd.get<int>("bin_size");
 
     opt.compression = cmd.get<int>("compression");
     opt.readsToProcess = cmd.get<int>("reads_to_process");

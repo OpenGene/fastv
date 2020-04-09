@@ -59,6 +59,7 @@ private:
     string getPlotX(int id);
     string getCoverageY(int id);
     string getEditDistanceY(int id);
+    void initBinSize();
 
 private:
     int mGenomeNum;

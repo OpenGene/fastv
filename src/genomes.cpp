@@ -54,15 +54,46 @@ void Genomes::init() {
         mBases.push_back(0);
         mSequences.push_back(iter->second);
 
+        mGenomeNum++;
+    }
+
+    if(mOptions->statsBinSize == 0) {
+        initBinSize();
+    }
+
+    for(iter = genomes.begin(); iter != genomes.end() ; iter++) {
         int binNum = (iter->second.length() + 1)/mOptions->statsBinSize;
         mCoverage.push_back(vector<uint32>(binNum, 0));
         mEditDistance.push_back(vector<float>(binNum, 0));
-
-        mGenomeNum++;
     }
 
     buildKmerTable();
     initBloomFilter();
+}
+
+void Genomes::initBinSize() {
+    int maxSize = 0;
+    for(int i=0; i<mGenomeNum; i++) {
+        if(mSequences[i].length() > maxSize)
+            maxSize = mSequences[i].length();
+    }
+
+    int binSize = maxSize / 1600;
+
+    if(binSize < 1)
+        mOptions->statsBinSize = 1;
+    else if(binSize < 10)
+        mOptions->statsBinSize = binSize;
+    else if(binSize < 100)
+        mOptions->statsBinSize = (binSize/10) * 10;
+    else if(binSize < 1000)
+        mOptions->statsBinSize = (binSize/100) * 100;
+    else if(binSize < 10000)
+        mOptions->statsBinSize = (binSize/1000) * 1000;
+    else if(binSize < 100000)
+        mOptions->statsBinSize = (binSize/10000) * 10000;
+    else
+        mOptions->statsBinSize = 100000;
 }
 
 void Genomes::initBloomFilter() {
