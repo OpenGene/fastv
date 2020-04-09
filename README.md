@@ -1,12 +1,12 @@
 # fastv
 fastv is an ultra-fast tool to detect and visualize microbial sequences from sequencing data, and can be used to detect viral infectious diseases, like COVID-19.
 
-# How fastv works?
-`fastv` accepts the input of FASTQ files (both SE/PE), along with a `KMER` file and a `Genomes` file of the target microorganism (see the `data/SARS-CoV-2.kmer.fa` and `data/SARS-CoV-2.genomes.fa` for an example), then:
+## how it works?
+`fastv` accepts the input of FASTQ files, along with a `KMER` file and a `Genomes` file of the target microorganism (see `data/SARS-CoV-2.kmer.fa` and `data/SARS-CoV-2.genomes.fa` for an example), then:
 1. performs data QCand quality filtering as `fastp` does (cut adapters, remove low quality reads, correct wrong bases).
-2. scans the clean data to collect the sequences that containing the unique KMER, or can be mapped to reference microbial genomes.
-3. visualize the result in HTML format, and output the report in JSON format.
-4. output the on-target sequencing reads for downstream analysis.
+2. scans the clean data to collect the sequences that containing any unique KMER, or can be mapped to any reference microbial genomes.
+3. make statistics, visualize the result in HTML format, and output the results in JSON format.
+4. output the on-target sequencing reads so that they can be analyzed by downstream tools.
 
 # take a quick glance of the informative report
 * Sample HTML report: http://opengene.org/fastv/fastv.html
