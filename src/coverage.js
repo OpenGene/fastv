@@ -9,12 +9,12 @@ function switch_sort() {
         sorting_by_coverage_rate = 0;
         genome_coverage_data.sort(sortByBases);
         drawCoverages('genome_coverage', genome_coverage_data, genome_sizes, stats_bin);
-        document.getElementById("sort_by_div").innerHTML = "Order by: <a href='javascript:switch_sort();'>Coverage rate</a> | <font color='#FF6600'>Bases</font>";
+        document.getElementById("sort_by_div").innerHTML = "Order by: <a href='javascript:switch_sort();'>Coverage rate</a> | <font color='#FF6600'>Bases on target</font>";
     } else {
         sorting_by_coverage_rate = 1;
         genome_coverage_data.sort(sortByCoverageRate);
         drawCoverages('genome_coverage', genome_coverage_data, genome_sizes, stats_bin);
-        document.getElementById("sort_by_div").innerHTML = "Order by: <font color='#FF6600'>Coverage rate</font> | <a href='javascript:switch_sort();'>Bases</a>";
+        document.getElementById("sort_by_div").innerHTML = "Order by: <font color='#FF6600'>Coverage rate</font> | <a href='javascript:switch_sort();'>Bases on target</a>";
     }
 }
 

@@ -262,7 +262,7 @@ void HtmlReporter::reportInsertSize(ofstream& ofs, int isizeLimit) {
 void HtmlReporter::printGenomeCoverage(ofstream& ofs, Genomes* g) {
     ofs << "<div class='section_div'>\n";
     ofs << "<div class='section_title' onclick=showOrHide('genome_coverage')><a name='result'>Genome Coverages <font size=-2 > (click to show/hide) </font></a></div>\n";
-    ofs << "<div id='sort_by_div' style='text-align:center;padding:10px;font-size:12px;'>Order by: <font color='#FF6600'>Coverage rate</font> | <a href='javascript:switch_sort();'>Bases</a></div>\n";
+    ofs << "<div id='sort_by_div' style='text-align:center;padding:10px;font-size:12px;'>Order by: <font color='#FF6600'>Coverage rate</font> | <a href='javascript:switch_sort();'>Bases on target</a></div>\n";
     ofs << "<div id='genome_coverage'>\n";
 
     g->reportHtml(ofs);
