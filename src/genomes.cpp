@@ -450,6 +450,8 @@ void Genomes::reportHtml(ofstream& ofs) {
 
     ofs << "var stats_bin = " << mOptions->statsBinSize << "; " << endl;
 
+    ofs << "genome_coverage_data.sort(sortByCoverageRate);" << endl;
+
     ofs << "drawCoverages('genome_coverage', genome_coverage_data, genome_sizes, stats_bin);" << endl;
 
     ofs << "</script>" << endl;

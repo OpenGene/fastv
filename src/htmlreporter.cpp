@@ -262,6 +262,7 @@ void HtmlReporter::reportInsertSize(ofstream& ofs, int isizeLimit) {
 void HtmlReporter::printGenomeCoverage(ofstream& ofs, Genomes* g) {
     ofs << "<div class='section_div'>\n";
     ofs << "<div class='section_title' onclick=showOrHide('genome_coverage')><a name='result'>Genome Coverages <font size=-2 > (click to show/hide) </font></a></div>\n";
+    ofs << "<div id='sort_by_div' style='text-align:center;padding:10px;font-size:12px;'>Order by: <font color='#FF6600'>Coverage rate</font> | <a href='javascript:switch_sort();'>Bases</a></div>\n";
     ofs << "<div id='genome_coverage'>\n";
 
     g->reportHtml(ofs);
@@ -391,7 +392,7 @@ void HtmlReporter::report(VirusDetector* vd, FilterResult* result, Stats* preSta
     printHeader(ofs);
 
     ofs << "<h1 style='text-align:left;'><a href='https://github.com/OpenGene/fastv' target='_blank' style='color:#663355;text-decoration:none;'>" + mOptions->reportTitle + "</a </h1>"<<endl;
-    string intro = "Created by <a href='https://github.com/OpenGene/fastv' style='color:#bc6f98'>fastv</a> v" + string(FASTV_VER)+ ", " + " an ultra-fast tool to detect and visualize microbial sequences from sequencing data, and can be used to detect viral infectious diseases, like COVID-19";
+    string intro = "Created by <a href='https://github.com/OpenGene/fastv' style='color:#1F77B4'>fastv</a> v" + string(FASTV_VER)+ ", " + " an ultra-fast tool to detect and visualize microbial sequences from sequencing data, and can be used to detect viral infectious diseases, like COVID-19";
     ofs << "<h6 style='text-align:left;margin-top:-10px;margin-bottom:-5px;color:#666666;'>" << intro << "</h6>" << endl;
 
     if(vd->getKmer()) 
