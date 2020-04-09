@@ -60,6 +60,7 @@ private:
     string getCoverageY(int id);
     string getEditDistanceY(int id);
     void initBinSize();
+    double getCoverageRate(int id);
 
 private:
     int mGenomeNum;

@@ -365,6 +365,20 @@ void Genomes::report() {
     }
 }
 
+double Genomes::getCoverageRate(int id) {
+    if(mCoverage[id].size() == 0)
+        return 0.0;
+
+    int covered = 0;
+
+    for(int b=0; b<mCoverage[id].size(); b++) {
+        if(mCoverage[id][b] >= mOptions->depthThreshold)
+            covered++;
+    }
+
+    return (double)covered/(double)mCoverage[id].size();
+}
+
 void Genomes::reportJSON(ofstream& ofs) {
     ofs << "\t" << "\"genome_mapping_result\": {" << endl;
     ofs << "\t\t" << "\"genome_number\": " << mGenomeNum << "," << endl;
@@ -375,6 +389,8 @@ void Genomes::reportJSON(ofstream& ofs) {
         long reads = mReads[i];
         long bases = mBases[i];
         long totalED = mTotalEditDistance[i];
+        double coverageRate = getCoverageRate(i);
+
         if(i != 0) 
             ofs << ", " << endl;
         ofs << "\t\t\t{" << endl;
@@ -382,6 +398,7 @@ void Genomes::reportJSON(ofstream& ofs) {
         ofs << "\t\t\t\t\"size\":" <<  mSequences[i].length() << "," << endl;
         ofs << "\t\t\t\t\"reads\":" <<  reads << "," << endl;
         ofs << "\t\t\t\t\"bases\":" <<  bases << "," << endl;
+        ofs << "\t\t\t\t\"coverage_rate\":" <<  coverageRate << "," << endl;
         if(bases == 0)
             ofs << "\t\t\t\t\"avg_mismatch_ratio\":" <<  0.0 << "," << endl;
         else
@@ -396,7 +413,7 @@ void Genomes::reportJSON(ofstream& ofs) {
 
 void Genomes::reportHtml(ofstream& ofs) {
     ofs << "<div id='genome_coverage' style='display:none;color:white;padding:5px;background-color: rgba(0,0,0,0.6);border:1px dotted #666666;font-size:12px;line-height:15px;'> </div>" << endl;
-    ofs << "<script src='http://opengene.org/coverage.js'></script>" << endl;
+    ofs << "<script src='http://opengene.org/fastv/coverage.js'></script>" << endl;
     ofs << "<script language='javascript'>" << endl;
 
     ofs << "var genome_sizes = [";
@@ -413,12 +430,14 @@ void Genomes::reportHtml(ofstream& ofs) {
         long reads = mReads[i];
         long bases = mBases[i];
         long totalED = mTotalEditDistance[i];
+        double coverageRate = getCoverageRate(i);
         if(i != 0) 
             ofs << ", " << endl;
         ofs << "{" << endl;
         ofs << "\"name\":\"" <<  name << "\"," << endl;
         ofs << "\"reads\":" <<  reads << "," << endl;
         ofs << "\"bases\":" <<  bases << "," << endl;
+        ofs << "\"coverage_rate\":" <<  coverageRate * 100 << "," << endl;
         if(bases == 0)
             ofs << "\"avg_mismatch_ratio\":" <<  0.0 << "," << endl;
         else

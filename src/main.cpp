@@ -16,7 +16,7 @@ mutex logmtx;
 int main(int argc, char* argv[]){
     // display version info if no argument is given
     if(argc == 1) {
-        cerr << "fastv: an ultra-fast tool to detect microbial sequence from sequencing data. This tool can be used to detect viral infectious diseases, like COVID-19." << endl << "version " << FASTV_VER << endl;
+        cerr << "fastv: an ultra-fast tool to detect and visualize microbial sequences from sequencing data. This tool can be used to detect viral infectious diseases, like COVID-19." << endl << "version " << FASTV_VER << endl;
         //cerr << "fastv --help to see the help"<<endl;
         //return 0;
     }
@@ -150,8 +150,8 @@ int main(int argc, char* argv[]){
     opt.kmerFile = cmd.get<string>("kmer");
     opt.genomeFile = cmd.get<string>("genomes");
     if(opt.kmerFile.empty() && opt.genomeFile.empty()) {
-        cerr << "Neither KMER file (-k) nor Genomes file (-g) is specified." << endl; 
-        cerr << "So try to find the built-in SARS-CoV-2 KMER/Genomes files to detect SARS-CoV-2." << endl;
+        cerr << endl << "SARS-CoV-2 Detection Mode..." << endl;
+        cerr << "Since neither KMER file (-k) nor Genomes file (-g) is specified, fastv will try to load SARS-CoV-2 KMER/Genomes files from " << joinpath(fastvDir, "data") << endl;
         string kmerFile = joinpath(fastvDir, "data/SARS-CoV-2.kmer.fa");
         if(file_exists(kmerFile)) {
             cerr << "Found KMER file: " << kmerFile << endl;
