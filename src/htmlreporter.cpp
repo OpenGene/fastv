@@ -393,7 +393,7 @@ void HtmlReporter::report(VirusDetector* vd, FilterResult* result, Stats* preSta
 
     ofs << "<h1 style='text-align:left;'><a href='https://github.com/OpenGene/fastv' target='_blank' style='color:#663355;text-decoration:none;'>" + mOptions->reportTitle + "</a </h1>"<<endl;
     string intro = "Created by <a href='https://github.com/OpenGene/fastv' style='color:#1F77B4'>fastv</a> v" + string(FASTV_VER)+ ", " + " an ultra-fast tool to detect and visualize microbial sequences from sequencing data, and can be used to detect viral infectious diseases, like COVID-19";
-    ofs << "<h6 style='text-align:left;margin-top:-10px;margin-bottom:-5px;color:#666666;'>" << intro << "</h6>" << endl;
+    ofs << "<div style='font-size:10px;font-weight:normal;text-align:left;color:#666666;padding:5px;'>" << intro << "</div>" << endl;
 
     if(vd->getKmer()) 
         printDetectionResult(ofs, vd->getKmer());
