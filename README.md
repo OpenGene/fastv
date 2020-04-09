@@ -32,11 +32,19 @@ Output the reads containing target microbial sequences
 ```shell
 ./fastv -i R1.fq.gz -I R2.fq.gz -o out.R1.fq.gz -O out.R2.fq.gz
 ```
-Please make sure the `data` folder is in the same directory as `fastv` executable program, otherwise you have to manually set the KMER file (-k) and genome file (-g) as following:
+Please make sure the `data` folder is in the same directory as `fastv` executable program, otherwise you have to manually set the KMER file (`-k`) and Genomes file (`-g`) as following:
 ```shell
 ./fastv -i R1.fq.gz -I R2.fq.gz -k data/SARS-CoV-2.kmer.fa -g data/SARS-CoV-2.genomes.fa
 ```
-You can get these two files by http or wget:
+Only analyze the data using KMER (fastest)
+```shell
+./fastv -i R1.fq.gz -I R2.fq.gz -k data/SARS-CoV-2.kmer.fa
+```
+Only analyze the data using reference genomes
+```shell
+./fastv -i R1.fq.gz -I R2.fq.gz -g data/SARS-CoV-2.genomes.fa
+```
+You can also get the SARS-CoV-2 KMER/Genomes files by http or wget:
 * `SARS-CoV-2.kmer.fa` http://opengene.org/fastv/data/SARS-CoV-2.kmer.fa
 * `SARS-CoV-2.genomes.fa` http://opengene.org/fastv/data/SARS-CoV-2.genomes.fa
 
