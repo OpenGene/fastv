@@ -177,14 +177,20 @@ void Genomes::buildKmerTable() {
                 default:
                     // we have to skip the segments covering this N
                     pos++;
+                    bool outterBreak = false;
                     key = Kmer::seq2uint64(seq, pos, keylen-1, valid);
                     while(valid == false) {
                         pos++;
                         key = Kmer::seq2uint64(seq, pos, keylen-1, valid);
                         // reach the tail
-                        if(pos >= seq.length() - keylen - polyATailLen)
+                        if(pos >= seq.length() - keylen - polyATailLen) {
+                            outterBreak = true;
                             break;
+                        }
                     }
+                    if(outterBreak)
+                        break;
+
                     continue;
             }
             key = (key << blankBits) >> blankBits;
@@ -262,13 +268,19 @@ bool Genomes::align(string& seq) {
                     continue;
                 pos++;
                 key = Kmer::seq2uint64(seq, pos, keylen-1, valid);
+                bool outterBreak = false;
                 while(valid == false) {
                     pos++;
                     key = Kmer::seq2uint64(seq, pos, keylen-1, valid);
                     // reach the tail
-                    if(pos >= seq.length() - keylen)
-                        continue;
+                    if(pos >= seq.length() - keylen){
+                        outterBreak = true;
+                        break;
+                    }
                 }
+                if(outterBreak)
+                    break;
+
                 continue;
         }
         key = (key << blankBits) >> blankBits;

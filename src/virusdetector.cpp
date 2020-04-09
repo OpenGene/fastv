@@ -89,13 +89,19 @@ bool VirusDetector::scan(string& seq) {
                     continue;
                 pos++;
                 key = Kmer::seq2uint64(seq, pos, keylen-1, valid);
+                bool outterBreak = false;
                 while(valid == false) {
                     pos++;
                     key = Kmer::seq2uint64(seq, pos, keylen-1, valid);
                     // reach the tail
-                    if(pos >= seq.length() - keylen)
-                        continue;
+                    if(pos >= seq.length() - keylen) {
+                        outterBreak = true;
+                        break;
+                    }
                 }
+                if(outterBreak)
+                    break;
+
                 continue;
         }
         key = (key << blankBits) >> blankBits;
