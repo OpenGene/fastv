@@ -1,8 +1,8 @@
 # fastv
-fastv is an ultra-fast tool to detect viral sequence from sequencing data for detection of viral infectious diseases, like COVID-19
+fastv is an ultra-fast tool to detect and visualize microbial sequences from sequencing data, and can be used to detect viral infectious diseases, like COVID-19.
 
 # what's fastv?
-`fastv` is designed to detect SARS-CoV-2 from sequencing data in FASTQ format, but will be also able to detect other viral sequences. `fastv` accepts the input of raw or clean FASTQ files (both SE/PE), performs quality filtering as `fastp` does (cut adapters, remove low quality reads, correct wrong bases), and then scans the clean data for the viral sequences.
+`fastv` accepts the input of raw or clean FASTQ files (both SE/PE), performs quality filtering as `fastp` does (cut adapters, remove low quality reads, correct wrong bases), and then scans the clean data for the microbial sequences.
 
 # take a quick glance of the informative report
 * Sample HTML report: http://opengene.org/fastv/fastv.html
@@ -24,7 +24,7 @@ Paired-end data
 ```shell
 ./fastv -i R1.fq.gz -I R2.fq.gz
 ```
-Output the reads containing target viral sequences
+Output the reads containing target microbial sequences
 ```shell
 ./fastv -i R1.fq.gz -I R2.fq.gz -o out.R1.fq.gz -O out.R2.fq.gz
 ```
@@ -53,24 +53,36 @@ cd fastv
 make
 ```
 
+# input/output
+Besides the FASTQ files, you can input.
+* the `Genomes` file: a FASTA file containing the reference genomes of the target microorganism. Sepecify it by (-g).
+* the `KMER` file: a FASTA file containing the UNIQUE KMER of the target microbial genomes. Sepecify it by (-k).
+If neither `KMER` file nor `Genomes` file is specified, fastv will try to load the SARS-CoV-2 Genomes/KMER files in the `data` folder to detect SARS-CoV-2 sequences.
+
+Besides the HTML/JSON reports, fastv also can output the sequence reads that contains any unique KMER or can be mapped to any of the target reference genomes. The output data:
+* is in FASTQ format
+* is clean data after quality filtering
+* the file names can be specified by `-o` for SE data, or `-o` and `-O` for PE data.
+
 ## screenshot
-![image](http://www.opengene.org/fastv/fastv.png)   
+![image](http://www.opengene.org/fastv/fastv-screenshot.png)   
 
 # options
 Key options:
 ```
   -i, --in1                           read1 input file name (string [=])
   -I, --in2                           read2 input file name (string [=])
-  -o, --out1                          file name to store read1 with viral sequences (string [=])
-  -O, --out2                          file name to store read2 with viral sequences (string [=])
-  -k, --kmer                          the KMER file in fasta format. data/SARS-CoV-2.kmer.fa will be used if neither KMER file (-k) nor Genomes file (-g) is specified (string [=])
-  -g, --genomes                       the genomes file in fasta format. data/SARS-CoV-2.genomes.fa will be used if neither KMER file (-k) nor Genomes file (-g) is specified (string [=])
-  -p, --positive_threshold            the data is considered as POSITIVE with viral sequence, when its mean coverage of unique kmer >= positive_threshold (0.001 ~ 100). 0.1 by default. (float [=0.1])
+  -o, --out1                          file name to store read1 with on-target sequences (string [=])
+  -O, --out2                          file name to store read2 with on-target sequences (string [=])
+  -k, --kmer                          the unique KMER file in fasta format. data/SARS-CoV-2.kmer.fa will be used if neither KMER file (-k) nor Genomes file (-g) is specified (string [=])
+  -g, --genomes                       the Genomes file in fasta format. data/SARS-CoV-2.genomes.fa will be used if neither KMER file (-k) nor Genomes file (-g) is specified (string [=])
+  -p, --positive_threshold            the data is considered as POSITIVE, when its mean coverage of unique kmer >= positive_threshold (0.001 ~ 100). 0.1 by default. (float [=0.1])
+  -d, --depth_threshold               For coverage calculation. A region is considered covered when its mean depth >= depth_threshold (0.001 ~ 1000). 1.0 by default. (float [=1])
+      --bin_size                      For coverage calculation. The genome is split to many bins, with the size of each bin is bin_size (1 ~ 100000), default 0 means adaptive. (int [=0])
   -j, --json                          the json format report file name (string [=fastv.json])
   -h, --html                          the html format report file name (string [=fastv.html])
   -R, --report_title                  should be quoted with ' or ", default is "fastv report" (string [=fastv report])
-  -w, --thread                        worker thread number, default is 2 (int [=2])
-  -?, --help                          print this message
+  -w, --thread                        worker thread number, default is 4 (int [=4])
 ```
 Other I/O options:
 ```

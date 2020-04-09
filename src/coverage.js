@@ -180,6 +180,10 @@ function drawGenome(genome, canvasid, size, bin) {
         ctx.fillStyle = "#999999";
         ctx.fillText(tick.toString(), x, maph);
     }
+
+    ctx.font = "10px Arial";
+    ctx.fillStyle = "#AAAAAA";
+    ctx.fillText(maxCoverage.toString() + "", 10, 10);
 }
 
 function getColor(mr) {
