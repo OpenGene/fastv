@@ -1,8 +1,12 @@
 # fastv
 fastv is an ultra-fast tool to detect and visualize microbial sequences from sequencing data, and can be used to detect viral infectious diseases, like COVID-19.
 
-# what's fastv?
-`fastv` accepts the input of raw or clean FASTQ files (both SE/PE), performs quality filtering as `fastp` does (cut adapters, remove low quality reads, correct wrong bases), and then scans the clean data for the microbial sequences.
+# How fastv works?
+`fastv` accepts the input of FASTQ files (both SE/PE), along with a `KMER` file and a `Genomes` file of the target microorganism (see the `data/SARS-CoV-2.kmer.fa` and `data/SARS-CoV-2.genomes.fa` for anexample), then:
+1. performs quality filtering as `fastp` does (cut adapters, remove low quality reads, correct wrong bases).
+2. scans the clean data for the microbial sequences that containing the unique KMER, or can be mapped to reference microbial genomes.
+3. visualize the result in HTML format, and output the report in JSON format.
+4. output the on-target sequencing reads for downstream analysis.
 
 # take a quick glance of the informative report
 * Sample HTML report: http://opengene.org/fastv/fastv.html
@@ -55,8 +59,9 @@ make
 
 # input/output
 Besides the FASTQ files, you can input.
-* the `Genomes` file: a FASTA file containing the reference genomes of the target microorganism. Sepecify it by (-g).
-* the `KMER` file: a FASTA file containing the UNIQUE KMER of the target microbial genomes. Sepecify it by (-k).
+* the `Genomes` file: a FASTA file containing the reference genomes of the target microorganism (`-g`).
+* the `KMER` file: a FASTA file containing the UNIQUE KMER of the target microbial genomes (`-k`).
+
 If neither `KMER` file nor `Genomes` file is specified, fastv will try to load the SARS-CoV-2 Genomes/KMER files in the `data` folder to detect SARS-CoV-2 sequences.
 
 Besides the HTML/JSON reports, fastv also can output the sequence reads that contains any unique KMER or can be mapped to any of the target reference genomes. The output data:
