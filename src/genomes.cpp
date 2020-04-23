@@ -63,7 +63,7 @@ void Genomes::init() {
 
     for(iter = genomes.begin(); iter != genomes.end() ; iter++) {
         int binNum = (iter->second.length() + 1)/mOptions->statsBinSize;
-        mCoverage.push_back(vector<uint32>(binNum, 0));
+        mCoverage.push_back(vector<float>(binNum, 0));
         mEditDistance.push_back(vector<float>(binNum, 0));
     }
 
@@ -228,7 +228,7 @@ bool Genomes::hasKey(uint64 key) {
 }
 
 bool Genomes::align(string& seq) {
-    vector<MapResult> results(mGenomeNum);
+    vector<vector<MapResult>> results(mGenomeNum);
 
     int keylen = mOptions->kmerKeyLen;
     int blankBits = 64 - 2*keylen;
@@ -298,13 +298,32 @@ bool Genomes::align(string& seq) {
                 uint32 genomeID = 0;
                 uint32 genomePos = 0;
                 unpackIdPos(gp, genomeID,  genomePos);
-                if(results[genomeID].mapped == false) {
+                if(results[genomeID].size() == 0) {
                     MapResult r = mapToGenome(seq, pos, mSequences[genomeID], genomePos);
 
-                    if(r.mapped || r.ed < results[genomeID].ed)
-                        results[genomeID] = r;
-                    if(r.mapped)
+                    if(r.mapped) {
                         totalMapped++;
+                        results[genomeID].push_back(r);
+                        while(true) {
+                            list<uint32>::iterator gpIterNext = gpIter;
+                            gpIterNext++;
+                            if(gpIter == gpList.end())
+                                break;
+                            uint32 gpNext = *gpIterNext;
+                            uint32 genomeIDNext = 0;
+                            uint32 genomePosNext = 0;
+                            unpackIdPos(gpNext, genomeIDNext,  genomePosNext);
+
+                            if(genomeIDNext != genomeID) 
+                                break;
+
+                            MapResult rNext = mapToGenome(seq, pos, mSequences[genomeID], genomePosNext);
+                            if(rNext.mapped) {
+                                results[genomeID].push_back(rNext);
+                            }
+                            gpIter = gpIterNext;
+                        }
+                    }
                 }
             }
 
@@ -318,15 +337,21 @@ bool Genomes::align(string& seq) {
     }
 
     bool mapped = false;
-    uint32 minED=0x3FFFFF;
     for(int i=0; i<mGenomeNum; i++) {
-        mapped |= results[i].mapped;
+        if(results[i].size() > 0) {
+            mapped  = true;
+            float frac = 1.0f/results[i].size();
 
-        if(results[i].mapped) {
-            cover(i, results[i].start, results[i].len, results[i].ed);
+            uint32 minED=0x3FFFFF;
+            for(int p=0; p<results[i].size(); p++) {
+                cover(i, results[i][p].start, results[i][p].len, results[i][p].ed, frac);
+                if(minED > results[i][p].ed)
+                    minED = results[i][p].ed;
+            }
 
-            if(minED > results[i].ed)
-                minED = results[i].ed;
+            mReads[i]++;
+            mBases[i] += results[i][0].len;
+            mTotalEditDistance[i] += minED;
         }
     }
 
@@ -489,11 +514,11 @@ string Genomes::getCoverageY(int id) {
             ss << ",";
 
         if(x < mCoverage[id].size() - 1)
-            ss  << (double)mCoverage[id][x] / (double)mOptions->statsBinSize ;
+            ss  << mCoverage[id][x] / (double)mOptions->statsBinSize ;
         else if(mSequences[id].length() - x * mOptions->statsBinSize == 0)
             ss << "0.0";
         else
-            ss  << (double)mCoverage[id][x] / (mSequences[id].length() - x * mOptions->statsBinSize) ;
+            ss  << mCoverage[id][x] / (mSequences[id].length() - x * mOptions->statsBinSize) ;
     }
     return ss.str();
 }
@@ -512,22 +537,18 @@ string Genomes::getEditDistanceY(int id) {
     return ss.str();
 }
 
-void Genomes::cover(int id, uint32 pos, uint32 len, uint32 ed) {
+void Genomes::cover(int id, uint32 pos, uint32 len, uint32 ed, float frac) {
     if(id >= mCoverage.size()) {
         error_exit("WRONG id");
     }
-
-    mReads[id]++;
-    mBases[id] += len;
-    mTotalEditDistance[id] += ed;
 
     int leftBin = pos / mOptions->statsBinSize;
     int rightBin = (pos+len) / mOptions->statsBinSize;
 
     if(leftBin == rightBin) {
         if(leftBin < mCoverage[id].size()) {
-            mCoverage[id][leftBin] += len;
-            mEditDistance[id][leftBin] += ed;
+            mCoverage[id][leftBin] += len * frac;
+            mEditDistance[id][leftBin] += ed * frac;
         }
     } else {
         for(int bin = leftBin; bin<rightBin; bin++) {
@@ -545,8 +566,8 @@ void Genomes::cover(int id, uint32 pos, uint32 len, uint32 ed) {
             float proportion = (right - left)/(float)len;
 
             if(bin < mCoverage[id].size()) {
-                mCoverage[id][bin] += (right - left);
-                mEditDistance[id][bin] += ed * proportion;
+                mCoverage[id][bin] += (right - left) * frac;
+                mEditDistance[id][bin] += ed * proportion * frac;
             }
         }
     }
