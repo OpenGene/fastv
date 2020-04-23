@@ -38,7 +38,10 @@ int main(int argc, char* argv[]){
     cmd.add<string>("genomes", 'g', "the Genomes file in fasta format. data/SARS-CoV-2.genomes.fa will be used if neither KMER file (-k) nor Genomes file (-g) is specified", false, "");
     cmd.add<float>("positive_threshold", 'p', "the data is considered as POSITIVE, when its mean coverage of unique kmer >= positive_threshold (0.001 ~ 100). 0.1 by default.", false, 0.1);
     cmd.add<float>("depth_threshold", 'd', "For coverage calculation. A region is considered covered when its mean depth >= depth_threshold (0.001 ~ 1000). 1.0 by default.", false, 1.0);
-    cmd.add<int>("bin_size", 0, "For coverage calculation. The genome is split to many bins, with the size of each bin is bin_size (1 ~ 100000), default 0 means adaptive.", false, 0);
+    cmd.add<int>("ed_threshold", 'E', "If the edit distance of a sequence and a genome region is <=ed_threshold, then consider it a match (0 ~ 50). 8 by default.", false, 8);
+    cmd.add<int>("long_read_threshold", 0, "A read will be considered as long read if its length >= long_read_threshold (100 ~ 10000). 200 by default.", false, 200);
+    cmd.add<int>("read_segment_len", 0, "A long read will be splitted to read segments, with each <= read_segment_len (50 ~ 5000, should be < long_read_threshold). 100 by default.", false, 100);
+    cmd.add<int>("bin_size", 0, "For coverage calculation. The genome is splitted to many bins, with each bin has a length of bin_size (1 ~ 100000), default 0 means adaptive.", false, 0);
 
     // reporting
     cmd.add<string>("json", 'j', "the json format report file name", false, "fastv.json");
@@ -176,6 +179,9 @@ int main(int argc, char* argv[]){
 
     opt.positiveThreshold = cmd.get<float>("positive_threshold");
     opt.depthThreshold = cmd.get<float>("depth_threshold");
+    opt.edThreshold = cmd.get<int>("ed_threshold");
+    opt.longReadThreshold = cmd.get<int>("long_read_threshold");
+    opt.segmentLength = cmd.get<int>("read_segment_len");
     opt.statsBinSize = cmd.get<int>("bin_size");
 
     opt.compression = cmd.get<int>("compression");

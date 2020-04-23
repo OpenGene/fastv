@@ -32,6 +32,7 @@ Options::Options(){
     statsBinSize = 0;
     longReadThreshold = 200;
     segmentLength = 100;
+    edThreshold = 8;
 }
 
 void Options::init() {
@@ -176,6 +177,18 @@ bool Options::validate() {
 
     if(depthThreshold < 0.001 || depthThreshold > 1000)
         error_exit("depth threshold (-d) should be 0.001 ~ 1000, suggest 1");
+
+    if(longReadThreshold < 100 || longReadThreshold > 10000)
+        error_exit("long read threshold (--long_read_threshold) should be 100 ~ 10000, suggest 200");
+
+    if(segmentLength < 50 || segmentLength > 5000)
+        error_exit("segment length for splitted long reads (--read_segment_len) should be 50 ~ 5000, suggest 100");
+
+    if(segmentLength >= longReadThreshold)
+        error_exit("segment length for splitted long reads (--read_segment_len) must less than long read threshold (--long_read_threshold)");
+
+    if(edThreshold < 0 || edThreshold > 50)
+        error_exit("edit distance threshold (-E) should be 0 ~ 50, suggest 8");
 
     if(trim.front1 < 0 || trim.front1 > 30)
         error_exit("trim_front1 (--trim_front1) should be 0 ~ 30, suggest 0 ~ 4");

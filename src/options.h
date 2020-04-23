@@ -301,6 +301,8 @@ public:
     double positiveThreshold;
     // the threshold of depth for a region considered as covered
     double depthThreshold;
+    // if ed(read, genome) <= edThreshold, then think it as a match
+    int edThreshold;
     // the bin size for stat coverage and edit distance
     int statsBinSize;
     // read with length >= longReadThreshold will be considered as long reads

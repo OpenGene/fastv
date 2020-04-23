@@ -382,7 +382,7 @@ MapResult Genomes::mapToGenome(string& seq, uint32 seqPos, string& genome, uint3
     ret.ed = ed;
     ret.start = gp;
     ret.len = seq.length();
-    ret.mapped = ed < 10 && ed < seq.length()/4; // TODO: export to options
+    ret.mapped = ed <= mOptions->edThreshold && ed < seq.length()/4; // TODO: export to options
 
     return ret;
 }
