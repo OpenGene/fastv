@@ -303,6 +303,10 @@ public:
     double depthThreshold;
     // the bin size for stat coverage and edit distance
     int statsBinSize;
+    // read with length >= longReadThreshold will be considered as long reads
+    int longReadThreshold;
+    // long reads will be split to reads with length <= segmentLength
+    int segmentLength;
 
 };
 

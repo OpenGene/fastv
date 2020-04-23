@@ -30,6 +30,8 @@ Options::Options(){
     positiveThreshold = 0.1;
     depthThreshold = 1.0;
     statsBinSize = 0;
+    longReadThreshold = 200;
+    segmentLength = 100;
 }
 
 void Options::init() {

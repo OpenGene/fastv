@@ -146,6 +146,22 @@ bool Read::fixMGI() {
 	return false;
 }
 
+vector<Read*> Read::split(int segment) {
+	vector<Read*> ret;
+	int splitted = 0;
+	string name = mName;
+	string strand = mStrand;
+	while(splitted < length()) {
+		int len = min(segment, length() - splitted);
+		string seq = mSeq.mStr.substr(splitted, len);
+		string quality = mQuality.substr(splitted, len);
+		Read* r = new Read(name, seq, strand, quality);
+		ret.push_back(r);
+		splitted += len;
+	}
+	return ret;
+}
+
 bool Read::test(){
 	Read r("@NS500713:64:HFKJJBGXY:1:11101:20469:1097 1:N:0:TATAGCCT+GGTCCCGA",
 		"CTCTTGGACTCTAACACTGTTTTTTCTTATGAAAACACAGGAGTGATGACTAGTTGAGTGCATTCTTATGAGACTCATAGTCATTCTATGATGTAGTTTTCCTTAGGAGGACATTTTTTACATGAAATTATTAACCTAAATAGAGTTGATC",

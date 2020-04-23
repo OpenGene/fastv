@@ -39,6 +39,18 @@ void VirusDetector::report() {
 }
 
 bool VirusDetector::detect(Read* r) {
+    if(r->length() >= mOptions->longReadThreshold) {
+        // long reads, split it
+        vector<Read*> reads = r->split(mOptions->segmentLength);
+        bool detected = false;
+        for(int i=0; i<reads.size(); i++) {
+            // recursive
+            detected |= detect(reads[i]);
+            delete reads[i];
+            reads[i] = NULL;
+        }
+        return detected;
+    }
     string& seq = r->mSeq.mStr;
     Sequence rSequence = ~(r->mSeq);
     string& rseq = rSequence.mStr;
