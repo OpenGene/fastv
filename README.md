@@ -1,5 +1,5 @@
 # fastv
-fastv is an ultra-fast tool to detect and visualize microbial sequences from sequencing data, and can be used to detect viral infectious diseases, like COVID-19. This tool supports both short reads (ILLUMINA, BGI, etc.) and long reads (ONT, PacBio, etc.)
+fastv is an ultra-fast tool to detect and visualize microbial sequences from sequencing data, and can be used to detect viral infectious diseases, like COVID-19. This tool supports both short reads (Illumina, BGI, etc.) and long reads (ONT, PacBio, etc.)
 
 ## how it works?
 `fastv` accepts the input of FASTQ files, along with a `KMER` file and a `Genomes` file of the target microorganism (see `data/SARS-CoV-2.kmer.fa` and `data/SARS-CoV-2.genomes.fa` for an example), then:
@@ -9,7 +9,7 @@ fastv is an ultra-fast tool to detect and visualize microbial sequences from seq
 4. output the on-target sequencing reads so that they can be analyzed by downstream tools.
 
 # take a quick glance of the informative report
-* Sample HTML report (ILLUMINA): http://opengene.org/fastv/fastv.html
+* Sample HTML report (Illumina): http://opengene.org/fastv/fastv.html
 * Sample HTML report (ONT): http://opengene.org/fastv/ont.html
 * Sample JSON report: http://opengene.org/fastv/fastv.json
 
