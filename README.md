@@ -22,11 +22,6 @@ If you want to generate your own unique KMER file, you can use UniqueKMER: https
 ./fastv -i testdata.fq.gz
 ```
 
-# quick examples
-```
-./uniquekmer -f test.fasta
-```
-
 # get fastv
 ## download binary 
 This binary is only for Linux systems: http://opengene.org/fastv/fastv
