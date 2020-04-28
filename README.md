@@ -8,6 +8,8 @@ fastv is an ultra-fast tool to detect and visualize microbial sequences from seq
 3. make statistics, visualize the result in HTML format, and output the results in JSON format.
 4. output the on-target sequencing reads so that they can be analyzed by downstream tools.
 
+If you want to generate your own unique KMER file, you can use UniqueKMER: https://github.com/OpenGene/UniqueKMER
+
 # take a quick glance of the informative report
 * Sample HTML report (Illumina): http://opengene.org/fastv/fastv.html
 * Sample HTML report (ONT): http://opengene.org/fastv/ont.html
@@ -21,33 +23,9 @@ fastv is an ultra-fast tool to detect and visualize microbial sequences from seq
 ```
 
 # quick examples
-Single-end data
-```shell
-./fastv -i testdata.fq.gz
 ```
-Paired-end data
-```shell
-./fastv -i R1.fq.gz -I R2.fq.gz
+./uniquekmer -f test.fasta
 ```
-Output the reads containing target microbial sequences
-```shell
-./fastv -i R1.fq.gz -I R2.fq.gz -o out.R1.fq.gz -O out.R2.fq.gz
-```
-Please make sure the `data` folder is in the same directory as `fastv` executable program, otherwise you have to manually set the KMER file (`-k`) and Genomes file (`-g`) as following:
-```shell
-./fastv -i R1.fq.gz -I R2.fq.gz -k data/SARS-CoV-2.kmer.fa -g data/SARS-CoV-2.genomes.fa
-```
-Only analyze the data using KMER (fastest)
-```shell
-./fastv -i R1.fq.gz -I R2.fq.gz -k data/SARS-CoV-2.kmer.fa
-```
-Only analyze the data using reference genomes
-```shell
-./fastv -i R1.fq.gz -I R2.fq.gz -g data/SARS-CoV-2.genomes.fa
-```
-You can also get the SARS-CoV-2 KMER/Genomes files by http or wget:
-* `SARS-CoV-2.kmer.fa` http://opengene.org/fastv/data/SARS-CoV-2.kmer.fa
-* `SARS-CoV-2.genomes.fa` http://opengene.org/fastv/data/SARS-CoV-2.genomes.fa
 
 # get fastv
 ## download binary 
