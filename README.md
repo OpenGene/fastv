@@ -8,7 +8,7 @@ fastv is an ultra-fast tool to detect and visualize microbial sequences from seq
 3. make statistics, visualize the result in HTML format, and output the results in JSON format.
 4. output the on-target sequencing reads so that they can be analyzed by downstream tools.
 
-If you want to generate your own unique KMER file, you can use UniqueKMER: https://github.com/OpenGene/UniqueKMER
+You can download KMER file and Genome file of viruses from http://opengene.org/uniquekmer/virus/index.html, if you want to generate your own unique KMER file, please use UniqueKMER: https://github.com/OpenGene/UniqueKMER
 
 # take a quick glance of the informative report
 * Sample HTML report (Illumina): http://opengene.org/fastv/fastv.html
