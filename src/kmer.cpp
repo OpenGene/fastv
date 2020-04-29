@@ -8,6 +8,7 @@ Kmer::Kmer(string filename, Options* opt)
     mFastaReader = NULL;
     mOptions = opt;
     init(filename);
+    resultMade = false;
 }
 
 Kmer::~Kmer()
@@ -55,11 +56,24 @@ void Kmer::init(string filename)
     }
 }
 
-void Kmer::report() {
+void Kmer::makeResults() {
+    mResults.clear();
     unordered_map<uint64, uint32>::iterator iter;
     for(iter = mKmerHits.begin(); iter != mKmerHits.end(); iter++) {
         uint64 kmer64 = iter->first;
-        cerr << mNames[kmer64] << ": " << mSequences[kmer64] << ": " << iter->second << endl;
+        string title = mNames[kmer64] + "_" + mSequences[kmer64];
+        mResults[title] =  iter->second;
+    }
+    resultMade = true;
+}
+
+void Kmer::report() {
+    if(!resultMade)
+        makeResults();
+
+    map<string, uint32>::iterator iter;
+    for(iter = mResults.begin(); iter != mResults.end(); iter++) {
+        cerr << iter->first << ": " << iter->second << endl;
     }
 
     double meanHit = getMeanHit();
@@ -95,26 +109,31 @@ bool Kmer::add(uint64 kmer64) {
 
 
 string Kmer::getPlotX() {
+    if(!resultMade)
+        makeResults();
+
     stringstream ss;
-    unordered_map<uint64, uint32>::iterator iter;
+    map<string, uint32>::iterator iter;
     int first = true;
-    for(iter = mKmerHits.begin(); iter != mKmerHits.end(); iter++) {
+    for(iter = mResults.begin(); iter != mResults.end(); iter++) {
         if(first) {
             first = false;
         } else 
             ss << ",";
 
-        uint64 kmer64 = iter->first;
-        ss << "\"" << mNames[kmer64] << ": " << mSequences[kmer64]<< "\"";
+        ss << "\"" << iter->first << "\"";
     }
     return ss.str();
 }
 
 string Kmer::getPlotY() {
+    if(!resultMade)
+        makeResults();
+
     stringstream ss;
-    unordered_map<uint64, uint32>::iterator iter;
+    map<string, uint32>::iterator iter;
     int first = true;
-    for(iter = mKmerHits.begin(); iter != mKmerHits.end(); iter++) {
+    for(iter = mResults.begin(); iter != mResults.end(); iter++) {
         if(first) {
             first = false;
         } else 
@@ -130,16 +149,18 @@ int Kmer::getKmerCount() {
 }
 
 void Kmer::reportJSON(ofstream& ofs) {
-    unordered_map<uint64, uint32>::iterator iter;
+    if(!resultMade)
+        makeResults();
+
+    map<string, uint32>::iterator iter;
     int first = true;
-    for(iter = mKmerHits.begin(); iter != mKmerHits.end(); iter++) {
+    for(iter = mResults.begin(); iter != mResults.end(); iter++) {
         if(first) {
             first = false;
         } else 
             ofs << "," << endl;
 
-        uint64 kmer64 = iter->first;
-        ofs << "\t\t\t\"" << mNames[kmer64] << "_" << mSequences[kmer64]<< "\"";
+        ofs << "\t\t\t\"" << iter->first << "\"";
         ofs << ":" << iter->second;
     }
     ofs << endl;

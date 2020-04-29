@@ -5,6 +5,7 @@
 #include "common.h"
 #include <vector>
 #include <unordered_map>
+#include <map>
 #include "fastareader.h"
 #include "options.h"
 #include <fstream>
@@ -28,11 +29,16 @@ public:
     static uint64 seq2uint64(string& seq, uint32 pos, uint32 len, bool& valid);
 
 private:
+    void makeResults();
+
+private:
     unordered_map<uint64, uint32> mKmerHits;
     FastaReader* mFastaReader;
     unordered_map<uint64, string> mNames;
     unordered_map<uint64, string> mSequences;
+    map<string, uint32> mResults;
     Options* mOptions;
+    bool resultMade;
 };
 
 
