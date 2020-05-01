@@ -107,8 +107,12 @@ bool Options::validate() {
         check_file_valid(kmerFile);
     }
 
-    if(genomeFile.empty() && kmerFile.empty()) {
-        error_exit("You should at least specify one KMER file (-k) or one Genomes file (-g)"); 
+    if(!kmerCollectionFile.empty()) {
+        check_file_valid(kmerCollectionFile);
+    }
+
+    if(genomeFile.empty() && kmerFile.empty() && kmerCollectionFile.empty()) {
+        error_exit("You should at least specify one of KMER file (-k), one Genomes file (-g), or one KMER collection file (-a)"); 
     }
 
     // if output to STDOUT, then...

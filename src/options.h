@@ -241,6 +241,8 @@ public:
     string genomeFile;
     // kmer FASTA file
     string kmerFile;
+    // kmer FASTA file
+    string kmerCollectionFile;
     // json file
     string jsonFile;
     // html file

@@ -9,6 +9,7 @@
 #include "read.h"
 #include "kmer.h"
 #include "genomes.h"
+#include "kmercollection.h"
 
 using namespace std;
 
@@ -28,6 +29,7 @@ private:
     Options* mOptions;
     Genomes* mGenomes;
     Kmer* mKmer;
+    KmerCollection* mKmerCollection;
     uint64 mHits;
 };
 

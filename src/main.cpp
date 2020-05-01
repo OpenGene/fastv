@@ -34,8 +34,9 @@ int main(int argc, char* argv[]){
     cmd.add<string>("in2", 'I', "read2 input file name", false, "");
     cmd.add<string>("out1", 'o', "file name to store read1 with on-target sequences", false, "");
     cmd.add<string>("out2", 'O', "file name to store read2 with on-target sequences", false, "");
-    cmd.add<string>("kmer", 'k', "the unique KMER file in fasta format. data/SARS-CoV-2.kmer.fa will be used if neither KMER file (-k) nor Genomes file (-g) is specified", false, "");
-    cmd.add<string>("genomes", 'g', "the Genomes file in fasta format. data/SARS-CoV-2.genomes.fa will be used if neither KMER file (-k) nor Genomes file (-g) is specified", false, "");
+    cmd.add<string>("kmer_collection", 'c', "the unique KMER collection file in fasta format, see an example: http://opengene.org/kmer_collection.fasta", false, "");
+    cmd.add<string>("kmer", 'k', "the unique KMER file of the detection target in fasta format. data/SARS-CoV-2.kmer.fa will be used if none of KMER/Genomes/KMER_Collection file is specified", false, "");
+    cmd.add<string>("genomes", 'g', "the Genomes file of the detection target in fasta format. data/SARS-CoV-2.genomes.fa will be used if none of KMER/Genomes/KMER_Collection file is specified", false, "");
     cmd.add<float>("positive_threshold", 'p', "the data is considered as POSITIVE, when its mean coverage of unique kmer >= positive_threshold (0.001 ~ 100). 0.1 by default.", false, 0.1);
     cmd.add<float>("depth_threshold", 'd', "For coverage calculation. A region is considered covered when its mean depth >= depth_threshold (0.001 ~ 1000). 1.0 by default.", false, 1.0);
     cmd.add<int>("ed_threshold", 'E', "If the edit distance of a sequence and a genome region is <=ed_threshold, then consider it a match (0 ~ 50). 8 by default.", false, 8);
@@ -120,7 +121,7 @@ int main(int argc, char* argv[]){
     cmd.add<int>("filter_by_index_threshold", 0, "the allowed difference of index barcode for index filtering, default 0 means completely identical.", false, 0);
     
     // base correction in overlapped regions of paired end data
-    cmd.add("correction", 'c', "enable base correction in overlapped regions (only for PE data), default is disabled");
+    cmd.add("correction", 'C', "enable base correction in overlapped regions (only for PE data), default is disabled");
     cmd.add<int>("overlap_len_require", 0, "the minimum length to detect overlapped region of PE reads. This will affect overlap analysis based PE merge, adapter trimming and correction. 30 by default.", false, 30);
     cmd.add<int>("overlap_diff_limit", 0, "the maximum number of mismatched bases to detect overlapped region of PE reads. This will affect overlap analysis based PE merge, adapter trimming and correction. 5 by default.", false, 5);
     cmd.add<int>("overlap_diff_percent_limit", 0, "the maximum percentage of mismatched bases to detect overlapped region of PE reads. This will affect overlap analysis based PE merge, adapter trimming and correction. Default 20 means 20%.", false, 20);
@@ -151,10 +152,11 @@ int main(int argc, char* argv[]){
     string fastvProgPath = string(argv[0]);
     string fastvDir = dirname(fastvProgPath);
     opt.kmerFile = cmd.get<string>("kmer");
+    opt.kmerCollectionFile = cmd.get<string>("kmer_collection");
     opt.genomeFile = cmd.get<string>("genomes");
-    if(opt.kmerFile.empty() && opt.genomeFile.empty()) {
+    if(opt.kmerFile.empty() && opt.genomeFile.empty() && opt.kmerCollectionFile.empty()) {
         cerr << endl << "SARS-CoV-2 Detection Mode..." << endl;
-        cerr << "Since neither KMER file (-k) nor Genomes file (-g) is specified, fastv will try to load SARS-CoV-2 KMER/Genomes files from " << joinpath(fastvDir, "data") << endl;
+        cerr << "Since none of KMER file (-k), Genomes file (-g) and KMER_Collection file (-c) is specified, fastv will try to load SARS-CoV-2 KMER/Genomes files from " << joinpath(fastvDir, "data") << endl;
         string kmerFile = joinpath(fastvDir, "data/SARS-CoV-2.kmer.fa");
         if(file_exists(kmerFile)) {
             cerr << "Found KMER file: " << kmerFile << endl;

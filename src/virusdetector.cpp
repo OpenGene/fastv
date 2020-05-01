@@ -6,11 +6,14 @@ VirusDetector::VirusDetector(Options* opt){
     mKmer = NULL;
     if(!mOptions->kmerFile.empty())
         mKmer = new Kmer(mOptions->kmerFile, opt);
-    else {
-        // no KMER file, the kmerKeyLen is not intialized
-        if(mOptions->kmerKeyLen == 0)
-            mOptions->kmerKeyLen = 25;
-    }
+
+    mKmerCollection = NULL;
+    if(!mOptions->kmerCollectionFile.empty())
+        mKmerCollection = new KmerCollection(mOptions->kmerCollectionFile, opt);
+
+    // no KMER file, the kmerKeyLen is not intialized
+    if(mOptions->kmerKeyLen == 0)
+        mOptions->kmerKeyLen = 25;
     mGenomes = NULL;
     if(!mOptions->genomeFile.empty())
         mGenomes = new Genomes(mOptions->genomeFile, opt);
@@ -22,6 +25,10 @@ VirusDetector::~VirusDetector(){
         delete mKmer;
         mKmer = NULL;
     }
+    if(mKmerCollection) {
+        delete mKmerCollection;
+        mKmerCollection = NULL;
+    }
     if(mGenomes) {
         delete mGenomes;
         mGenomes = NULL;
@@ -32,6 +39,10 @@ void VirusDetector::report() {
     if(mKmer) {
         cerr << "Unique KMER hits:"<<endl;
         mKmer->report();
+    }
+    if(mKmerCollection) {
+        cerr << "KMER Collection hits:"<<endl;
+        mKmerCollection->report();
     }
     if(mGenomes) {
         //mGenomes->report();
@@ -130,6 +141,10 @@ bool VirusDetector::scan(string& seq) {
             bool hit = mKmer->add(key);
             if(hit)
                 hitCount++;
+        }
+
+        if(mKmerCollection) {
+            mKmerCollection->add(key);
         }
     }
 
