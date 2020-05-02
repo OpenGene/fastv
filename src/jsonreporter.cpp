@@ -95,6 +95,12 @@ void JsonReporter::report(VirusDetector* vd, FilterResult* result, Stats* preSta
         genome->reportJSON(ofs);
     }
 
+    // KMER detection
+    KmerCollection* kc = vd->getKmerCollection();
+    if(kc) {
+        kc->reportJSON(ofs);
+    }
+
     // summary
     ofs << "\t" << "\"summary\": {" << endl;
 

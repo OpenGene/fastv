@@ -63,7 +63,14 @@ bool KmerCollection::getLine(char* line, int maxLine){
     return status;
 }
 
-bool desc_comp (int i,int j) { return (i>j); }
+bool descComp (int i,int j) { return (i>j); }
+
+bool KCResultComp (KCResult i, KCResult j) { 
+    if (i.mCoverage == j.mCoverage)
+        return i.mMedianHit > j.mMedianHit;
+    else
+        return i.mCoverage > j.mCoverage;
+}
 
 void KmerCollection::stat(){
     vector<vector<int>> kmerHits(mNumber);
@@ -95,13 +102,29 @@ void KmerCollection::stat(){
             if(medianPos >= kmerHits[id].size())
                 mMedianHits[id] = 0;
             else {
-                nth_element(kmerHits[id].begin(), kmerHits[id].begin()+medianPos, kmerHits[id].end(), desc_comp);
+                nth_element(kmerHits[id].begin(), kmerHits[id].begin()+medianPos, kmerHits[id].end(), descComp);
                 mMedianHits[id] = kmerHits[id][medianPos];
             }
             mMeanHits[id] = (double)mHits[id]/(double)mKmerCounts[id];
             mCoverage[id] = (double)kmerHits[id].size()/(double)mKmerCounts[id];
         }
     }
+
+    for(int id=0; id<mNumber; id++){
+        if(mCoverage[id] > mOptions->kcCoverageThreshold && mKmerCounts[id] > 10) {
+            KCResult kcr;
+            kcr.mName = mNames[id];
+            kcr.mHit = mHits[id];
+            kcr.mCoverage = mCoverage[id];
+            kcr.mMedianHit = mMedianHits[id];
+            kcr.mMeanHit = mMeanHits[id];
+            kcr.mKmerCount = mKmerCounts[id];
+
+            mResults.push_back(kcr);
+        }
+    }
+
+    sort(mResults.begin(),mResults.end(),KCResultComp);
 
     mStatDone = true;
 }
@@ -228,6 +251,29 @@ void KmerCollection::report() {
 }
 
 void KmerCollection::reportJSON(ofstream& ofs) {
+    if(!mStatDone)
+        stat();
+
+    ofs << "\t" << "\"kmer_collection_scan_result\": {" << endl;
+
+    int first = true;
+    for(int i=0; i<mResults.size(); i++) {
+        KCResult kcr = mResults[i];
+        if(first) {
+            first = false;
+        } else 
+            ofs << "," << endl;
+        string name = replace(kcr.mName, "\"", "'");
+        ofs << "\t\t\"" << name << "\":{";
+        ofs << "\"coverage\":" << kcr.mCoverage;
+        ofs << ",\"kmer_count\":" << kcr.mKmerCount;
+        ofs << ",\"kmer_hits\":" << kcr.mHit;
+        ofs << ",\"median_depth\":" << kcr.mMedianHit;
+        ofs << ",\"mean_depth\":" << kcr.mMeanHit;
+        ofs << "}";
+    }
+
+    ofs << endl << "\t}," << endl;
 }
 
 void KmerCollection::makeBitAndMask() {

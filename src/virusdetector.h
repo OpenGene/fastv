@@ -23,6 +23,7 @@ public:
 
     Kmer* getKmer() {return mKmer;}
     Genomes* getGenomes() {return mGenomes;}
+    KmerCollection* getKmerCollection() {return mKmerCollection;}
 
 
 private:

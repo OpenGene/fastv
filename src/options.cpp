@@ -33,6 +33,7 @@ Options::Options(){
     longReadThreshold = 200;
     segmentLength = 100;
     edThreshold = 8;
+    kcCoverageThreshold = 0.1;
 }
 
 void Options::init() {

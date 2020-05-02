@@ -19,6 +19,16 @@
 
 using namespace std;
 
+class KCResult {
+public:
+    string mName;
+    uint64  mHit;
+    int mMedianHit;
+    double mMeanHit;
+    double mCoverage;
+    int mKmerCount;
+};
+
 class KmerCollection
 {
 public:
@@ -47,6 +57,7 @@ private:
     vector<double> mMeanHits;
     vector<double> mCoverage;
     vector<int> mKmerCounts;
+    vector<KCResult> mResults;
     int mNumber;
     uint32* mHashCounts;
     string mFilename;

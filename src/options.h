@@ -311,6 +311,8 @@ public:
     int longReadThreshold;
     // long reads will be split to reads with length <= segmentLength
     int segmentLength;
+    //  coverage threshold to be reported in kmer collection results
+    double kcCoverageThreshold;
 
 };
 

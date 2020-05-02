@@ -78,7 +78,7 @@ void Kmer::report() {
 
     double meanHit = getMeanHit();
     cerr << endl;
-    cerr << "Mean coverage: " << meanHit << endl<<endl;
+    cerr << "Mean depth: " << meanHit << endl<<endl;
     if(meanHit >= mOptions->positiveThreshold)
         cerr << "Result: POSITIVE";
     else
