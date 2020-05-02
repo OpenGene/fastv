@@ -2,6 +2,7 @@
 #include "util.h"
 #include <sstream>
 #include <string.h>
+#include <memory.h>
 #include "kmer.h"
 
 const long HASH_LENGTH = (1L<<30);
@@ -221,7 +222,7 @@ void KmerCollection::report() {
         stat();
     for(int i=0; i<mNumber; i++) {
         if(mCoverage[i]>0.5) {
-            cerr << i+1 << " " << mNames[i] << ", hits: " << mHits[i] << "/ median hits: " << mMedianHits[i] << "/ mean hits: " << mMeanHits[i] << "/ coverage: " << mCoverage[i] << endl;
+            cerr << mNames[i] << ", all KMER hits: " << mHits[i] << ", median hits: " << mMedianHits[i] << ", mean hits: " << mMeanHits[i] << ", coverage: " << mCoverage[i] << endl;
         }
     }
 }
