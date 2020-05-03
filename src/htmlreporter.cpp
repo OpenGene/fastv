@@ -272,6 +272,20 @@ void HtmlReporter::printGenomeCoverage(ofstream& ofs, Genomes* g) {
     ofs << "</div>\n"; // section_div
 }
 
+void HtmlReporter::reportKmerCollection(ofstream& ofs, KmerCollection* kc) {
+    ofs << "<div class='section_div'>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('kcr')><a name='result'>KMER Collection Scan Result <font size=-2 > (click to show/hide) </font></a></div>\n";
+    ofs << "<div id='kcr'>\n";
+
+    ofs << "<div id='kcr_result'>\n";
+    
+    kc->reportHTML(ofs);
+
+    ofs << "</div>\n"; //kcr_result
+    ofs << "</div>\n"; //kcr
+
+    ofs << "</div>\n"; // section_div
+}
 
 void HtmlReporter::reportKmerHits(ofstream& ofs, Kmer* kmer) {
     ofs << "<div id='kmer_hits_figure'>\n";
@@ -399,6 +413,8 @@ void HtmlReporter::report(VirusDetector* vd, FilterResult* result, Stats* preSta
         printDetectionResult(ofs, vd->getKmer());
     if(vd->getGenomes()) 
         printGenomeCoverage(ofs, vd->getGenomes());
+    if(vd->getKmerCollection()) 
+        reportKmerCollection(ofs, vd->getKmerCollection());
 
     printSummary(ofs, result, preStats1, postStats1, preStats2, postStats2);
 

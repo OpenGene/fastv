@@ -37,6 +37,8 @@ private:
     void printDetectionResult(ofstream& ofs, Kmer* kmer);
     void printGenomeCoverage(ofstream& ofs, Genomes* g);
     void reportKmerHits(ofstream& ofs, Kmer* kmer);
+    void reportKmerCollection(ofstream& ofs, KmerCollection* kc);
+    
     
 private:
     Options* mOptions;

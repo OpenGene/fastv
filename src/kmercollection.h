@@ -37,6 +37,7 @@ public:
     void init();
     void report();
     void reportJSON(ofstream& ofs);
+    void reportHTML(ofstream& ofs);
     bool add(uint64 kmer64);
 
     uint32 packIdCount(uint32 id, uint32 count);

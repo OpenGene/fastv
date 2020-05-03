@@ -276,6 +276,28 @@ void KmerCollection::reportJSON(ofstream& ofs) {
     ofs << endl << "\t}," << endl;
 }
 
+void KmerCollection::reportHTML(ofstream& ofs) {
+    ofs << "<table class='summary_table' style='width:98%'>\n";
+    ofs <<  "<tr style='background:#cccccc'> <td>Genome</td><td>Coverage</td><td>Median depth</td><td>Mean depth</td><td>Remark</td>  </tr>"  << endl;
+    for(int i=0; i<mResults.size(); i++) {
+        KCResult kcr = mResults[i];
+
+        string remark;
+        if(kcr.mName.find("phi-X174")!=string::npos)
+            remark = "Illumina PhiX control library";
+        else if(kcr.mName ==  "NC_045512.2 Wuhan seafood market pneumonia virus isolate Wuhan-Hu-1, complete genome")
+            remark = "SARS-CoV-2";
+        ofs << "<tr>";
+        ofs << "<td>" << kcr.mName << "</td>";
+        ofs << "<td>" << kcr.mCoverage * 100 << "%</td>";
+        ofs << "<td>" << kcr.mMedianHit << "</td>";
+        ofs << "<td>" << kcr.mMeanHit << "</td>";
+        ofs << "<td>" << remark << "</td>";
+        ofs << "</tr>" <<  endl;
+    }
+    ofs << "</table>\n";
+}
+
 void KmerCollection::makeBitAndMask() {
     int bits=1;
     uint32 mask =0x01;
