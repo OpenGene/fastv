@@ -37,11 +37,11 @@ VirusDetector::~VirusDetector(){
 
 void VirusDetector::report() {
     if(mKmer) {
-        cerr << "Unique KMER hits:"<<endl;
+        cerr << "Coverage for target unique KMER file:"<<endl;
         mKmer->report();
     }
     if(mKmerCollection) {
-        cerr << "KMER Collection hits:"<<endl;
+        cerr << "Detection result for provided KMER collection:"<<endl;
         mKmerCollection->report();
     }
     if(mGenomes) {

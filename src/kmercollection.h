@@ -49,7 +49,7 @@ private:
     uint64 makeHash(uint64 key);
     bool eof();
     void makeBitAndMask();
-
+    bool isHighConfidence(KCResult kcr);
 private:
     Options* mOptions;
     vector<string> mNames;

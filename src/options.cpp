@@ -34,6 +34,8 @@ Options::Options(){
     segmentLength = 100;
     edThreshold = 8;
     kcCoverageThreshold = 0.1;
+    kcCoverageHighConfidence = 0.9;
+    kcMedianHitHighConfidence  = 10;
 }
 
 void Options::init() {

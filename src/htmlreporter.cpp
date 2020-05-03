@@ -104,7 +104,7 @@ void HtmlReporter::printSummary(ofstream& ofs, FilterResult* result, Stats* preS
 
     ofs << endl;
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('summary')><a name='summary'>Data QC Summary <font size=-2 > (click to show/hide) </font></a></div>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('summary')><a name='summary'>Data QC summary <font size=-2 > (click to show/hide) </font></a></div>\n";
     ofs << "<div id='summary'>\n";
 
     ofs << "<div class='subsection_title' onclick=showOrHide('general')>General</div>\n";
@@ -261,7 +261,7 @@ void HtmlReporter::reportInsertSize(ofstream& ofs, int isizeLimit) {
 
 void HtmlReporter::printGenomeCoverage(ofstream& ofs, Genomes* g) {
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('genome_coverage')><a name='result'>Genome Coverages <font size=-2 > (click to show/hide) </font></a></div>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('genome_coverage')><a name='result'>Genome coverages <font size=-2 > (click to show/hide) </font></a></div>\n";
     ofs << "<div id='sort_by_div' style='text-align:center;padding:10px;font-size:12px;'>Order by: <font color='#FF6600'>Coverage rate</font> | <a href='javascript:switch_sort();'>Bases on target</a></div>\n";
     ofs << "<div id='genome_coverage'>\n";
 
@@ -274,7 +274,7 @@ void HtmlReporter::printGenomeCoverage(ofstream& ofs, Genomes* g) {
 
 void HtmlReporter::reportKmerCollection(ofstream& ofs, KmerCollection* kc) {
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('kcr')><a name='result'>KMER Collection Scan Result <font size=-2 > (click to show/hide) </font></a></div>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('kcr')><a name='result'>Detection result for provided KMER collection<font size=-2 > (click to show/hide) </font></a></div>\n";
     ofs << "<div id='kcr'>\n";
 
     ofs << "<div id='kcr_result'>\n";
@@ -305,7 +305,7 @@ void HtmlReporter::reportKmerHits(ofstream& ofs, Kmer* kmer) {
 
     json_str += "];\n";
 
-    json_str += "var layout={title:'Unique KMER hits (" + to_string(kmer->getKmerCount()) + " in total)', xaxis:{tickangle:60, tickfont:{size: 8,color: '#bc6f98'}},yaxis:{title:'Hit'}};\n";
+    json_str += "var layout={title:'Unique KMER hits (" + to_string(kmer->getKmerCount()) + " KMER keys)', xaxis:{tickangle:60, tickfont:{size: 8,color: '#bc6f98'}},yaxis:{title:'Hit'}};\n";
     json_str += "Plotly.newPlot('plot_kmer_hits', data, layout);\n";
 
     ofs << json_str;
@@ -375,7 +375,7 @@ void HtmlReporter::reportDuplication(ofstream& ofs) {
 
 void HtmlReporter::printDetectionResult(ofstream& ofs, Kmer* kmer) {
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('result')><a name='result'>KMER Detection Result <font size=-2 > (click to show/hide) </font></a></div>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('result')><a name='result'>Detection result for target unique KMER file<font size=-2 > (click to show/hide) </font></a></div>\n";
     ofs << "<div id='result'>\n";
 
     ofs << "<div id='detection_result'>\n";

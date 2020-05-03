@@ -243,10 +243,16 @@ uint64 KmerCollection::makeHash(uint64 key) {
 void KmerCollection::report() {
     if(!mStatDone)
         stat();
-    for(int i=0; i<mNumber; i++) {
-        if(mCoverage[i]>0.5) {
-            cerr << mNames[i] << ", all KMER hits: " << mHits[i] << ", median hits: " << mMedianHits[i] << ", mean hits: " << mMeanHits[i] << ", coverage: " << mCoverage[i] << endl;
-        }
+    for(int i=0; i<mResults.size(); i++) {
+        KCResult kcr = mResults[i];
+        if(!isHighConfidence(kcr))
+            continue;
+        cerr << kcr.mName << ",";
+        cerr << "coverage:" << kcr.mCoverage;
+        cerr << ",kmer_count:" << kcr.mKmerCount;
+        cerr << ",median_depth:" << kcr.mMedianHit;
+        cerr << ",mean_depth:" << kcr.mMeanHit;
+        cerr <<  endl;
     }
 }
 
@@ -276,11 +282,25 @@ void KmerCollection::reportJSON(ofstream& ofs) {
     ofs << endl << "\t}," << endl;
 }
 
+bool KmerCollection::isHighConfidence(KCResult kcr) {
+    if(kcr.mCoverage >= mOptions->kcCoverageHighConfidence && kcr.mMedianHit >= mOptions->kcMedianHitHighConfidence)
+        return true;
+    else
+        return false;
+}
+
 void KmerCollection::reportHTML(ofstream& ofs) {
-    ofs << "<table class='summary_table' style='width:98%'>\n";
+    ofs << "<table class='summary_table' style='width:100%'>\n";
     ofs <<  "<tr style='background:#cccccc'> <td>Genome</td><td>Coverage</td><td>Median depth</td><td>Mean depth</td><td>Remark</td>  </tr>"  << endl;
+
+    int highConfidence = 0;
     for(int i=0; i<mResults.size(); i++) {
         KCResult kcr = mResults[i];
+
+        if(!isHighConfidence(kcr))
+            continue;
+
+        highConfidence++;
 
         string remark;
         if(kcr.mName.find("phi-X174")!=string::npos)
@@ -288,14 +308,45 @@ void KmerCollection::reportHTML(ofstream& ofs) {
         else if(kcr.mName ==  "NC_045512.2 Wuhan seafood market pneumonia virus isolate Wuhan-Hu-1, complete genome")
             remark = "SARS-CoV-2";
         ofs << "<tr>";
-        ofs << "<td>" << kcr.mName << "</td>";
-        ofs << "<td>" << kcr.mCoverage * 100 << "%</td>";
-        ofs << "<td>" << kcr.mMedianHit << "</td>";
-        ofs << "<td>" << kcr.mMeanHit << "</td>";
-        ofs << "<td>" << remark << "</td>";
+        ofs << "<td width=60%>" << kcr.mName << "</td>";
+        ofs << "<td width=10%>" << kcr.mCoverage * 100 << "%</td>";
+        ofs << "<td width=8%>" << kcr.mMedianHit << "</td>";
+        ofs << "<td width=8%>" << kcr.mMeanHit << "</td>";
+        ofs << "<td width=14%>" << remark << "</td>";
         ofs << "</tr>" <<  endl;
     }
     ofs << "</table>\n";
+
+    if(highConfidence != mResults.size())  {
+        ofs << "<div class='subsection_title' style='font-size:12px;font-weight:normal;color:#223399;' onclick=showOrHide('low_confidence_kcr')>+ Show " << mResults.size() - highConfidence;
+        ofs << " more with low confidence (coverage < " << mOptions->kcCoverageHighConfidence *  100;
+        ofs << "% or median depth < " << mOptions->kcMedianHitHighConfidence;
+        ofs << ") ▼ </div>\n";
+        ofs << "<table id='low_confidence_kcr' style='display:none;width:100%;' class='summary_table'>\n";
+        ofs <<  "<tr style='background:#cccccc'> <td>Genome</td><td>Coverage</td><td>Median depth</td><td>Mean depth</td><td>Remark</td>  </tr>"  << endl;
+
+        int highConfidence = 0;
+        for(int i=0; i<mResults.size(); i++) {
+            KCResult kcr = mResults[i];
+
+            if(isHighConfidence(kcr))
+                continue;
+
+            string remark;
+            if(kcr.mName.find("phi-X174")!=string::npos)
+                remark = "Illumina PhiX control library";
+            else if(kcr.mName ==  "NC_045512.2 Wuhan seafood market pneumonia virus isolate Wuhan-Hu-1, complete genome")
+                remark = "SARS-CoV-2";
+            ofs << "<tr>";
+            ofs << "<td width=60%>" << kcr.mName << "</td>";
+            ofs << "<td width=10%>" << kcr.mCoverage * 100 << "%</td>";
+            ofs << "<td width=8%>" << kcr.mMedianHit << "</td>";
+            ofs << "<td width=8%>" << kcr.mMeanHit << "</td>";
+            ofs << "<td width=14%>" << remark << "</td>";
+            ofs << "</tr>" <<  endl;
+        }
+        ofs << "</table>\n";
+    }
 }
 
 void KmerCollection::makeBitAndMask() {

@@ -313,6 +313,10 @@ public:
     int segmentLength;
     //  coverage threshold to be reported in kmer collection results
     double kcCoverageThreshold;
+    // coverage for high-confidence KCR
+    double kcCoverageHighConfidence;
+    // median hit for high-confidence KCR
+    double kcMedianHitHighConfidence;
 
 };
 
