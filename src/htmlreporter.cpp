@@ -104,7 +104,7 @@ void HtmlReporter::printSummary(ofstream& ofs, FilterResult* result, Stats* preS
 
     ofs << endl;
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('summary')><a name='summary'>Data QC summary <font size=-2 > (click to show/hide) </font></a></div>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('summary')><a name='summary'>Data QC summary <font color='#88CCFF' > (click to show/hide) </font></a></div>\n";
     ofs << "<div id='summary'>\n";
 
     ofs << "<div class='subsection_title' onclick=showOrHide('general')>General</div>\n";
@@ -172,7 +172,7 @@ void HtmlReporter::printSummary(ofstream& ofs, FilterResult* result, Stats* preS
 
     if(result && mOptions->adapterCuttingEnabled()) {
         ofs << "<div class='section_div'>\n";
-        ofs << "<div class='section_title' onclick=showOrHide('adapters')><a name='summary'>Adapters <font size=-2 > (click to show/hide) </font></a></div>\n";
+        ofs << "<div class='section_title' onclick=showOrHide('adapters')><a name='summary'>Adapters <font color='#88CCFF' > (click to show/hide) </font></a></div>\n";
         ofs << "<div id='adapters' style='display:none'>\n";
 
         result->reportAdapterHtml(ofs, pre_total_bases);
@@ -183,7 +183,7 @@ void HtmlReporter::printSummary(ofstream& ofs, FilterResult* result, Stats* preS
 
     if(mOptions->duplicate.enabled) {
         ofs << "<div class='section_div'>\n";
-        ofs << "<div class='section_title' onclick=showOrHide('duplication')><a name='summary'>Duplication <font size=-2 > (click to show/hide) </font></a></div>\n";
+        ofs << "<div class='section_title' onclick=showOrHide('duplication')><a name='summary'>Duplication <font color='#88CCFF' > (click to show/hide) </font></a></div>\n";
         ofs << "<div id='duplication' style='display:none'>\n";
 
         reportDuplication(ofs);
@@ -194,7 +194,7 @@ void HtmlReporter::printSummary(ofstream& ofs, FilterResult* result, Stats* preS
 
     if(mOptions->isPaired()) {
         ofs << "<div class='section_div'>\n";
-        ofs << "<div class='section_title' onclick=showOrHide('insert_size')><a name='summary'>Insert size estimation <font size=-2 > (click to show/hide) </font></a></div>\n";
+        ofs << "<div class='section_title' onclick=showOrHide('insert_size')><a name='summary'>Insert size estimation <font color='#88CCFF' > (click to show/hide) </font></a></div>\n";
         ofs << "<div id='insert_size' style='display:none'>\n";
 
         reportInsertSize(ofs, preStats1->getCycles() + preStats2->getCycles() - mOptions->overlapRequire);
@@ -261,7 +261,7 @@ void HtmlReporter::reportInsertSize(ofstream& ofs, int isizeLimit) {
 
 void HtmlReporter::printGenomeCoverage(ofstream& ofs, Genomes* g) {
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('genome_coverage')><a name='result'>Genome coverages <font size=-2 > (click to show/hide) </font></a></div>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('genome_coverage')><a name='result'>Genome coverages for file: <I>" << mOptions->genomeFile << "</I><font color='#88CCFF' > (click to show/hide) </font></a></div>\n";
     ofs << "<div id='sort_by_div' style='text-align:center;padding:10px;font-size:12px;'>Order by: <font color='#FF6600'>Coverage rate</font> | <a href='javascript:switch_sort();'>Bases on target</a></div>\n";
     ofs << "<div id='genome_coverage'>\n";
 
@@ -274,7 +274,7 @@ void HtmlReporter::printGenomeCoverage(ofstream& ofs, Genomes* g) {
 
 void HtmlReporter::reportKmerCollection(ofstream& ofs, KmerCollection* kc) {
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('kcr')><a name='result'>Detection result for provided KMER collection<font size=-2 > (click to show/hide) </font></a></div>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('kcr')><a name='result'>Detection result for KMER collection file: <I>" << mOptions->kmerCollectionFile << "</I><font color='#88CCFF' > (click to show/hide) </font></a></div>\n";
     ofs << "<div id='kcr'>\n";
 
     ofs << "<div id='kcr_result'>\n";
@@ -375,7 +375,7 @@ void HtmlReporter::reportDuplication(ofstream& ofs) {
 
 void HtmlReporter::printDetectionResult(ofstream& ofs, Kmer* kmer) {
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('result')><a name='result'>Detection result for target unique KMER file<font size=-2 > (click to show/hide) </font></a></div>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('result')><a name='result'>Detection result for target unique KMER file: <I>" << mOptions->kmerFile << "</I><font color='#88CCFF' > (click to show/hide) </font></a></div>\n";
     ofs << "<div id='result'>\n";
 
     ofs << "<div id='detection_result'>\n";
@@ -385,7 +385,8 @@ void HtmlReporter::printDetectionResult(ofstream& ofs, Kmer* kmer) {
         result = "<font color='red'><B>POSITIVE<B></font>";
     else
         result = "NEGATIVE";
-    outputRow(ofs, "KMER detection result:", result);
+    outputRow(ofs, "Target KMER file:", mOptions->kmerFile);
+    outputRow(ofs, "Detection result for target KMER file:", result);
     outputRow(ofs, "Mean depth of KMER:", to_string(kmer->getMeanHit()));
     outputRow(ofs, "Threshold to be positive:", to_string(mOptions->positiveThreshold));
     ofs << "</table>\n";
@@ -406,7 +407,7 @@ void HtmlReporter::report(VirusDetector* vd, FilterResult* result, Stats* preSta
     printHeader(ofs);
 
     ofs << "<h1 style='text-align:left;'><a href='https://github.com/OpenGene/fastv' target='_blank' style='color:#663355;text-decoration:none;'>" + mOptions->reportTitle + "</a </h1>"<<endl;
-    string intro = "Created by <a href='https://github.com/OpenGene/fastv' style='color:#1F77B4'>fastv</a> v" + string(FASTV_VER)+ ", " + " an ultra-fast tool to detect and visualize microbial sequences from sequencing data, and can be used to detect viral infectious diseases, like COVID-19";
+    string intro = "Created by <a href='https://github.com/OpenGene/fastv' style='color:#1F77B4'>fastv</a> v" + string(FASTV_VER)+ ", " + " an ultra-fast tool for fast identification of SARS-CoV-2 and other microbes from sequencing data";
     ofs << "<div style='font-size:10px;font-weight:normal;text-align:left;color:#666666;padding:5px;'>" << intro << "</div>" << endl;
 
     if(vd->getKmer()) 
@@ -419,7 +420,7 @@ void HtmlReporter::report(VirusDetector* vd, FilterResult* result, Stats* preSta
     printSummary(ofs, result, preStats1, postStats1, preStats2, postStats2);
 
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('before_filtering')><a name='summary'>Original data <font size=-2 > (click to show/hide) </font></a></div>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('before_filtering')><a name='summary'>Original data <font color='#88CCFF' > (click to show/hide) </font></a></div>\n";
     ofs << "<div id='before_filtering'  style='display:none'>\n";
 
     if(preStats1) {
@@ -434,7 +435,7 @@ void HtmlReporter::report(VirusDetector* vd, FilterResult* result, Stats* preSta
     ofs << "</div>\n";
 
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('after_filtering')><a name='summary'>Clean data used for detection <font size=-2 > (click to show/hide) </font></a></div>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('after_filtering')><a name='summary'>Clean data used for detection <font color='#88CCFF' > (click to show/hide) </font></a></div>\n";
     ofs << "<div id='after_filtering'  style='display:none'>\n";
 
     if(postStats1) {  
@@ -476,8 +477,8 @@ void HtmlReporter::printCSS(ofstream& ofs){
     ofs << ".alignright {text-align:right;}" << endl;
     ofs << ".figure {width:800px;height:600px;}" << endl;
     ofs << ".header {color:#ffffff;padding:1px;height:20px;background:#000000;}" << endl;
-    ofs << ".section_title {color:#ffffff;font-size:20px;padding:5px;text-align:left;background:#663355; margin-top:10px;}" << endl;
-    ofs << ".subsection_title {font-size:16px;padding:5px;margin-top:10px;text-align:left;color:#663355}" << endl;
+    ofs << ".section_title {color:#ffffff;font-size:14px;padding:7px;text-align:left;background:#663355; margin-top:10px;}" << endl;
+    ofs << ".subsection_title {font-size:12px;padding:5px;margin-top:10px;text-align:left;color:#663355}" << endl;
     ofs << "#container {text-align:center;padding:3px 3px 3px 10px;font-family:Arail,'Liberation Mono', Menlo, Courier, monospace;}" << endl;
     ofs << ".menu_item {text-align:left;padding-top:5px;font-size:18px;}" << endl;
     ofs << ".highlight {text-align:left;padding-top:30px;padding-bottom:30px;font-size:20px;line-height:35px;}" << endl;

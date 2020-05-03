@@ -16,7 +16,7 @@ mutex logmtx;
 int main(int argc, char* argv[]){
     // display version info if no argument is given
     if(argc == 1) {
-        cerr << "fastv: an ultra-fast tool to detect and visualize microbial sequences from sequencing data. This tool can be used to detect viral infectious diseases, like COVID-19." << endl << "version " << FASTV_VER << endl;
+        cerr << "fastv: an ultra-fast tool for fast identification of SARS-CoV-2 and other microbes from sequencing data." << endl << "version " << FASTV_VER << endl;
         //cerr << "fastv --help to see the help"<<endl;
         //return 0;
     }
