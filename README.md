@@ -21,10 +21,11 @@ fastv is an ultra-fast tool for identification of SARS-CoV-2 and other microbes 
 4. outputs the on-target sequencing reads so that they can be analyzed by downstream tools.
 
 # understand the input
-* (required) the `FASTQ` file to be scanned, can be single-end (`-i`) or paired-end (`-i` and `-I`), can be short reads (Illumina, MGI, etc.) or long reads (PacBio, ONT, etc.)
-* (optional) the `Genomes` file: a FASTA file containing the reference genomes of the target microorganism (`-g`).
-* (optional) the `KMER` file: a FASTA file containing the UNIQUE KMER of the target microbial genomes (`-k`).
-* (optional) the `KMER Collection` file: a FASTA containing the unique KMERs of many microorganisms (`-c`). See an example: http://opengene.org/kmer_collection.fasta
+`fastv` accepts following files as input:
+1. (required) the `FASTQ` file to be scanned, can be single-end (`-i`) or paired-end (`-i` and `-I`), can be short reads (Illumina, MGI, etc.) or long reads (PacBio, ONT, etc.)
+2. (optional) the `Genomes` file: a FASTA file containing one or many reference genomes of the target microorganism (`-g`).
+3. (optional) the `KMER` file: a FASTA file containing the UNIQUE KMER of the target microbial genomes (`-k`).
+4. (optional) the `KMER Collection` file: a FASTA containing the unique KMERs of many microorganisms (`-c`). See an example: http://opengene.org/kmer_collection.fasta
 
 If none of (`KMER`, `KMER Collection`, `Genomes`) files is specified, fastv will try to load the SARS-CoV-2 Genomes/KMER files in the `data` folder to detect SARS-CoV-2 sequences.
 
