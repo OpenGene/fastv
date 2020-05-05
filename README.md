@@ -7,14 +7,14 @@ fastv is an ultra-fast tool for identification of SARS-CoV-2 and other microbes 
 * Sample JSON report: http://opengene.org/fastv/fastv.json
 
 # quick example
-* FASTQ file for testing: http://opengene.org/fastv/testdata.fq.gz
-* get fafstv and use following command for testing: 
+* download FASTQ file for testing: http://opengene.org/fastv/testdata.fq.gz
+* get fastv and use following command for testing: 
 ```shell
 ./fastv -i testdata.fq.gz
 ```
 
 ## how it works?
-`fastv` accepts the input of FASTQ files, along with a `KMER` file and a `Genomes` file of the target microorganism (see `data/SARS-CoV-2.kmer.fa` and `data/SARS-CoV-2.genomes.fa` for an example), then:
+`fastv` accepts FASTQ files as input, and:
 1. performs data QC and quality filtering as `fastp` does (cut adapters, remove low quality reads, correct wrong bases).
 2. scans the clean data to collect the sequences that containing any unique KMER, or can be mapped to any reference microbial genomes.
 3. make statistics, visualize the result in HTML format, and output the results in JSON format.
