@@ -379,13 +379,12 @@ void HtmlReporter::printDetectionResult(ofstream& ofs, Kmer* kmer) {
     ofs << "<div id='result'>\n";
 
     ofs << "<div id='detection_result'>\n";
-    ofs << "<table class='summary_table'>\n";
+    ofs << "<table class='summary_table' style='width:800px'>\n";
     string result;
     if(kmer->getMeanHit() >= mOptions->positiveThreshold)
         result = "<font color='red'><B>POSITIVE<B></font>";
     else
         result = "NEGATIVE";
-    outputRow(ofs, "Target KMER file:", mOptions->kmerFile);
     outputRow(ofs, "Detection result for target KMER file:", result);
     outputRow(ofs, "Mean depth of KMER:", to_string(kmer->getMeanHit()));
     outputRow(ofs, "Threshold to be positive:", to_string(mOptions->positiveThreshold));
@@ -467,7 +466,7 @@ void HtmlReporter::printCSS(ofstream& ofs){
     ofs << "<style type=\"text/css\">" << endl;
     ofs << "td {border:1px solid #dddddd;padding:5px;font-size:12px;}" << endl;
     ofs << "table {border:1px solid #999999;padding:2x;border-collapse:collapse; width:800px}" << endl;
-    ofs << ".col1 {width:240px; font-weight:bold;}" << endl;
+    ofs << ".col1 {width:320px; font-weight:bold;}" << endl;
     ofs << ".adapter_col {width:500px; font-size:10px;}" << endl;
     ofs << "img {padding:30px;}" << endl;
     ofs << "#menu {font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace;}" << endl;
