@@ -149,7 +149,7 @@ void HtmlReporter::printSummary(ofstream& ofs, FilterResult* result, Stats* preS
     ofs << "</table>\n";
     ofs << "</div>\n";
 
-    ofs << "<div class='subsection_title' onclick=showOrHide('after_filtering_summary')>Clean data used for detecting viral sequences</div>\n";
+    ofs << "<div class='subsection_title' onclick=showOrHide('after_filtering_summary')>Clean data used for detection</div>\n";
     ofs << "<div id='after_filtering_summary'>\n";
     ofs << "<table class='summary_table'>\n";
     outputRow(ofs, "total reads:", formatNumber(post_total_reads));
@@ -439,11 +439,11 @@ void HtmlReporter::report(VirusDetector* vd, FilterResult* result, Stats* preSta
 
     if(postStats1) {  
         string name = "read1";
-        postStats1 -> reportHtml(ofs, "Clean data used for detecting viral sequences", name);
+        postStats1 -> reportHtml(ofs, "Clean data used for detection", name);
     }
 
     if(postStats2) {
-        postStats2 -> reportHtml(ofs, "Clean data used for detecting viral sequences", "read2");
+        postStats2 -> reportHtml(ofs, "Clean data used for detection", "read2");
     }
 
     ofs << "</div>\n";
