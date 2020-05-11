@@ -167,7 +167,7 @@ void KmerCollection::init()
             return ;
     }
 
-    int collision = 0;
+    int unique = 0;
     int total = 0;
     bool initialized = false;
     while(true) {
@@ -180,10 +180,10 @@ void KmerCollection::init()
         }
         if(line[0]=='>') {
             if(total > 0) {
-                //cerr << collision << "/" << total << endl;
-                mKmerCounts.push_back(total);
+                //cerr << unique << "/" << total << endl;
+                mKmerCounts.push_back(unique);
                 total=0;
-                collision=0;
+                unique=0;
             }
             mNames.push_back(linestr.substr(1, linestr.length() - 1));
             mHits.push_back(0);
@@ -217,13 +217,19 @@ void KmerCollection::init()
             uint64 kmerhash = makeHash(kmer64);
             if(mHashCounts[kmerhash] ==0) {
                 mHashCounts[kmerhash] = mNumber;
-            } else if(mHashCounts[kmerhash] != mNumber && mHashCounts[kmerhash]!= COLLISION_FLAG) {
+                unique++;
+            } else if(mHashCounts[kmerhash]!= COLLISION_FLAG) {
+                if(mHashCounts[kmerhash] == mNumber)
+                    unique--;
+                else {
+                    int collID = mHashCounts[kmerhash]-1;
+                    mKmerCounts[collID]--;
+                }
                 mHashCounts[kmerhash] = COLLISION_FLAG;
-                collision++;
             }
         }
     }
-    mKmerCounts.push_back(total);
+    mKmerCounts.push_back(unique);
 
     makeBitAndMask();
 }
