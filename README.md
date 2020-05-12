@@ -43,7 +43,7 @@ Besides the HTML/JSON reports, fastv also can output the sequence reads that con
 * You can download the `k-mer collection` file for viral genomes from: http://opengene.org/microbial.kc.fasta.gz
 
 
-If you want to generate your own unique k-mer files and k-mer collection files, please use Uniquek-mer: https://github.com/OpenGene/Uniquek-mer
+If you want to generate your own unique k-mer files and k-mer collection files, please use UniqueKMER: https://github.com/OpenGene/UniqueKMER
 
 # understand the output
 fastv outputs reports in HTML and JSON formats.
@@ -85,7 +85,7 @@ Key options:
   -O, --out2                          file name to store read2 with on-target sequences (string [=])
   -c, --kmer_collection               the unique k-mer collection file in fasta format, see an example: http://opengene.org/kmer_collection.fasta (string [=])
   -k, --kmer                          the unique k-mer file of the detection target in fasta format. data/SARS-CoV-2.kmer.fa will be used if none of k-mer/Genomes/k-mer_Collection file is specified (string [=])
-  -g, --genomes                       the Genomes file of the detection target in fasta format. data/SARS-CoV-2.genomes.fa will be used if none of k-mer/Genomes/k-mer_Collection file is specified (string [=])
+  -g, --genomes                       the genomes file of the detection target in fasta format. data/SARS-CoV-2.genomes.fa will be used if none of k-mer/Genomes/k-mer_Collection file is specified (string [=])
   -p, --positive_threshold            the data is considered as POSITIVE, when its mean coverage of unique kmer >= positive_threshold (0.001 ~ 100). 0.1 by default. (float [=0.1])
   -d, --depth_threshold               For coverage calculation. A region is considered covered when its mean depth >= depth_threshold (0.001 ~ 1000). 1.0 by default. (float [=1])
   -E, --ed_threshold                  If the edit distance of a sequence and a genome region is <=ed_threshold, then consider it a match (0 ~ 50). 8 by default. (int [=8])

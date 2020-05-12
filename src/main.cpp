@@ -36,7 +36,7 @@ int main(int argc, char* argv[]){
     cmd.add<string>("out2", 'O', "file name to store read2 with on-target sequences", false, "");
     cmd.add<string>("kmer_collection", 'c', "the unique k-mer collection file in fasta format, see an example: http://opengene.org/kmer_collection.fasta", false, "");
     cmd.add<string>("kmer", 'k', "the unique k-mer file of the detection target in fasta format. data/SARS-CoV-2.kmer.fa will be used if none of k-mer/Genomes/k-mer_Collection file is specified", false, "");
-    cmd.add<string>("genomes", 'g', "the Genomes file of the detection target in fasta format. data/SARS-CoV-2.genomes.fa will be used if none of k-mer/Genomes/k-mer_Collection file is specified", false, "");
+    cmd.add<string>("genomes", 'g', "the genomes file of the detection target in fasta format. data/SARS-CoV-2.genomes.fa will be used if none of k-mer/Genomes/k-mer_Collection file is specified", false, "");
     cmd.add<float>("positive_threshold", 'p', "the data is considered as POSITIVE, when its mean coverage of unique kmer >= positive_threshold (0.001 ~ 100). 0.1 by default.", false, 0.1);
     cmd.add<float>("depth_threshold", 'd', "For coverage calculation. A region is considered covered when its mean depth >= depth_threshold (0.001 ~ 1000). 1.0 by default.", false, 1.0);
     cmd.add<int>("ed_threshold", 'E', "If the edit distance of a sequence and a genome region is <=ed_threshold, then consider it a match (0 ~ 50). 8 by default.", false, 8);
