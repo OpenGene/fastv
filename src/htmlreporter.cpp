@@ -274,7 +274,7 @@ void HtmlReporter::printGenomeCoverage(ofstream& ofs, Genomes* g) {
 
 void HtmlReporter::reportKmerCollection(ofstream& ofs, KmerCollection* kc) {
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('kcr')><a name='result'>Detection result for KMER collection file: <I>" << mOptions->kmerCollectionFile << "</I><font color='#88CCFF' > (click to show/hide) </font></a></div>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('kcr')><a name='result'>Detection result for k-mer collection file: <I>" << mOptions->kmerCollectionFile << "</I><font color='#88CCFF' > (click to show/hide) </font></a></div>\n";
     ofs << "<div id='kcr'>\n";
 
     ofs << "<div id='kcr_result'>\n";
@@ -305,7 +305,7 @@ void HtmlReporter::reportKmerHits(ofstream& ofs, Kmer* kmer) {
 
     json_str += "];\n";
 
-    json_str += "var layout={title:'Unique KMER hits (" + to_string(kmer->getKmerCount()) + " KMER keys)', xaxis:{tickangle:60, tickfont:{size: 8,color: '#bc6f98'}},yaxis:{title:'Hit'}};\n";
+    json_str += "var layout={title:'Unique k-mer hits (" + to_string(kmer->getKmerCount()) + " k-mer keys)', xaxis:{tickangle:60, tickfont:{size: 8,color: '#bc6f98'}},yaxis:{title:'Hit'}};\n";
     json_str += "Plotly.newPlot('plot_kmer_hits', data, layout);\n";
 
     ofs << json_str;
@@ -375,7 +375,7 @@ void HtmlReporter::reportDuplication(ofstream& ofs) {
 
 void HtmlReporter::printDetectionResult(ofstream& ofs, Kmer* kmer) {
     ofs << "<div class='section_div'>\n";
-    ofs << "<div class='section_title' onclick=showOrHide('result')><a name='result'>Detection result for target unique KMER file: <I>" << mOptions->kmerFile << "</I><font color='#88CCFF' > (click to show/hide) </font></a></div>\n";
+    ofs << "<div class='section_title' onclick=showOrHide('result')><a name='result'>Detection result for target unique k-mer file: <I>" << mOptions->kmerFile << "</I><font color='#88CCFF' > (click to show/hide) </font></a></div>\n";
     ofs << "<div id='result'>\n";
 
     ofs << "<div id='detection_result'>\n";
@@ -385,8 +385,8 @@ void HtmlReporter::printDetectionResult(ofstream& ofs, Kmer* kmer) {
         result = "<font color='red'><B>POSITIVE<B></font>";
     else
         result = "NEGATIVE";
-    outputRow(ofs, "Detection result for target KMER file:", result);
-    outputRow(ofs, "Mean depth of KMER:", to_string(kmer->getMeanHit()));
+    outputRow(ofs, "Detection result for target k-mer file:", result);
+    outputRow(ofs, "Mean depth of k-mer coverage:", to_string(kmer->getMeanHit()));
     outputRow(ofs, "Threshold to be positive:", to_string(mOptions->positiveThreshold));
     ofs << "</table>\n";
 

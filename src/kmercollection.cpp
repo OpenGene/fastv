@@ -276,10 +276,13 @@ uint64 KmerCollection::makeHash(uint64 key) {
 void KmerCollection::report() {
     if(!mStatDone)
         stat();
+    int highConfidenceNum = 0;
     for(int i=0; i<mResults.size(); i++) {
         KCResult kcr = mResults[i];
         if(!isHighConfidence(kcr))
             continue;
+        highConfidenceNum++ ;
+        cerr << highConfidenceNum << ", ";
         cerr << kcr.mName << ",";
         cerr << "coverage:" << kcr.mCoverage;
         cerr << ",kmer_count:" << kcr.mKmerCount;
@@ -287,6 +290,8 @@ void KmerCollection::report() {
         cerr << ",mean_depth:" << kcr.mMeanHit;
         cerr <<  endl;
     }
+    if(highConfidenceNum == 0)
+        cerr << "No high confidence KMER coverage found." << endl;
 }
 
 void KmerCollection::reportJSON(ofstream& ofs) {
@@ -348,6 +353,8 @@ void KmerCollection::reportHTML(ofstream& ofs) {
         ofs << "<td width=14%>" << remark << "</td>";
         ofs << "</tr>" <<  endl;
     }
+    if(highConfidence == 0)
+        ofs << "<tr> <td colspan=5 style='text-align:center;'>No high confidence KMER coverage found. </td></tr>" << endl;
     ofs << "</table>\n";
 
     if(highConfidence != mResults.size())  {
