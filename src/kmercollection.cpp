@@ -346,7 +346,7 @@ void KmerCollection::reportHTML(ofstream& ofs) {
         else if(kcr.mName ==  "NC_045512.2 Wuhan seafood market pneumonia virus isolate Wuhan-Hu-1, complete genome")
             remark = "SARS-CoV-2";
         ofs << "<tr>";
-        ofs << "<td width=60%>" << kcr.mName << "</td>";
+        ofs << "<td width=60%>" << kcr.mName << " (" << kcr.mKmerCount << " k-mer keys)</td>";
         ofs << "<td width=10%>" << kcr.mCoverage * 100 << "%</td>";
         ofs << "<td width=8%>" << kcr.mMedianHit << "</td>";
         ofs << "<td width=8%>" << kcr.mMeanHit << "</td>";
@@ -378,7 +378,7 @@ void KmerCollection::reportHTML(ofstream& ofs) {
             else if(kcr.mName ==  "NC_045512.2 Wuhan seafood market pneumonia virus isolate Wuhan-Hu-1, complete genome")
                 remark = "SARS-CoV-2";
             ofs << "<tr>";
-            ofs << "<td width=60%>" << kcr.mName << "</td>";
+            ofs << "<td width=60%>" << kcr.mName << " (" << kcr.mKmerCount << " k-mer keys)</td>";
             ofs << "<td width=10%>" << kcr.mCoverage * 100 << "%</td>";
             ofs << "<td width=8%>" << kcr.mMedianHit << "</td>";
             ofs << "<td width=8%>" << kcr.mMeanHit << "</td>";
