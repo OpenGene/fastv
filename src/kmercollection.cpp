@@ -10,22 +10,29 @@ const long HASH_LENGTH = (1L<<30);
 KmerCollection::KmerCollection(string filename, Options* opt)
 {
     mOptions = opt;
-    mHashCounts = new uint32[HASH_LENGTH];
-    memset(mHashCounts, 0, sizeof(uint32)*HASH_LENGTH);
+    mHashKCH = new uint32[HASH_LENGTH];
+    memset(mHashKCH, 0, sizeof(uint32)*HASH_LENGTH);
     mFilename = filename;
     mNumber = 0;
     mIdBits = 0;
     mIdMask = 0;
     mCountMax = 0;
     mStatDone = false;
+    mUniqueHashNum = 0;
+    mKCHits = NULL;
     init();
 }
 
 KmerCollection::~KmerCollection()
 {
-    if(mHashCounts) {
-        delete mHashCounts;
-        mHashCounts = NULL;
+    if(mHashKCH) {
+        delete mHashKCH;
+        mHashKCH = NULL;
+    }
+
+    if(mKCHits) {
+        delete mKCHits;
+        mKCHits = NULL;
     }
 
     if (mZipped){
@@ -74,21 +81,12 @@ bool KCResultComp (KCResult i, KCResult j) {
 
 void KmerCollection::stat(){
     vector<vector<int>> kmerHits(mNumber);
-    for(int i=0; i<HASH_LENGTH; i++) {
-        uint32 val = mHashCounts[i];
+    for(int i=0; i<mUniqueHashNum; i++) {
+        KCHit kch = mKCHits[i];
 
-        if(val == 0 ||  val == COLLISION_FLAG)
-            continue;
-
-        uint32 id, count;
-        unpackIdCount(val, id, count);
-
-        if(id == 0 || id > mNumber)
-            error_exit("Wrong ID");
-
-        if(count>0) {
-            mHits[id-1]+=count;
-            kmerHits[id-1].push_back(count);
+        if(kch.mHit>0) {
+            mHits[kch.mID]+=kch.mHit;
+            kmerHits[kch.mID].push_back(kch.mHit);
         }
     }
 
@@ -131,24 +129,21 @@ void KmerCollection::stat(){
 
 bool KmerCollection::add(uint64 kmer64) {
     uint64 kmerhash = makeHash(kmer64);
-    uint32 hashcount = mHashCounts[kmerhash];
-    if(hashcount != 0 &&  hashcount != COLLISION_FLAG) {
-        uint32 id;
-        uint32 count;
-        unpackIdCount(hashcount, id, count);
-        if(count == mCountMax)
+    uint32 index = mHashKCH[kmerhash];
+    if(index != 0 && index != COLLISION_FLAG) {
+        if(mKCHits[index - 1].mKey64 == kmer64) {
+            mKCHits[index - 1].mHit++;
             return true;
-        else
-            count++;
-        uint32 newHashcount  = packIdCount(id, count);
-        mHashCounts[kmerhash] = newHashcount;
-        return true;
+        } else
+            return false;
     } else
         return false;
 }
 
 void KmerCollection::init()
 {
+    if(mOptions->verbose)
+        loginfo("Initializing KMER collection: " + mFilename + "\n");
     if (ends_with(mFilename, ".fasta.gz") || ends_with(mFilename, ".fa.gz")){
         mZipFile = gzopen(mFilename.c_str(), "r");
         mZipped = true;
@@ -160,6 +155,8 @@ void KmerCollection::init()
         error_exit("Not a FASTA file: " + mFilename);
     }
 
+    //unordered_map<uint64, KCHit> hashKmerMap;
+
     const int maxLine = 1000;
     char line[maxLine];
     if (mZipped){
@@ -167,6 +164,7 @@ void KmerCollection::init()
             return ;
     }
 
+    vector<vector<uint64>> allKmer64;
     int unique = 0;
     int total = 0;
     bool initialized = false;
@@ -187,6 +185,7 @@ void KmerCollection::init()
             }
             mNames.push_back(linestr.substr(1, linestr.length() - 1));
             mHits.push_back(0);
+            allKmer64.push_back(vector<uint64>());
             mMeanHits.push_back(0.0);
             mCoverage.push_back(0.0);
             mMedianHits.push_back(0);
@@ -215,23 +214,51 @@ void KmerCollection::init()
         if(valid) {
             total++;
             uint64 kmerhash = makeHash(kmer64);
-            if(mHashCounts[kmerhash] ==0) {
-                mHashCounts[kmerhash] = mNumber;
+            //unordered_map<uint64, KCHit>::iterator iter = hashKmerMap.find(kmerhash);
+            if(mHashKCH[kmerhash] == 0) {
                 unique++;
-            } else if(mHashCounts[kmerhash]!= COLLISION_FLAG) {
-                if(mHashCounts[kmerhash] == mNumber)
+                mHashKCH[kmerhash] = mNumber;
+                allKmer64[mNumber-1].push_back(kmer64);
+            } else if(mHashKCH[kmerhash] != COLLISION_FLAG) { // we use the mHits as a flag
+                if(mHashKCH[kmerhash] == mNumber)
                     unique--;
                 else {
-                    int collID = mHashCounts[kmerhash]-1;
+                    int collID = mHashKCH[kmerhash]-1;
                     mKmerCounts[collID]--;
                 }
-                mHashCounts[kmerhash] = COLLISION_FLAG;
+                mHashKCH[kmerhash] = COLLISION_FLAG;
             }
         }
     }
     mKmerCounts.push_back(unique);
 
-    makeBitAndMask();
+    mUniqueHashNum = 0;
+    for(int i=0; i<mNumber; i++)
+        mUniqueHashNum += mKmerCounts[i];
+
+    mKCHits = new KCHit[mUniqueHashNum];
+    memset(mKCHits, 0, sizeof(KCHit)*mUniqueHashNum);
+
+    uint32 cur = 0;
+    for(int i=0; i<mNumber; i++) {
+        for(int j=0; j<allKmer64[i].size(); j++) {
+            uint64 kmer64 = allKmer64[i][j];
+            uint64 kmerhash = makeHash(kmer64);
+            uint32 index = mHashKCH[kmerhash];
+            // means unique
+            if(index == i+1) {
+                if(cur >= mUniqueHashNum)
+                    error_exit("Uninque number incorrectly calculated in KMER collection initialization.");
+                mHashKCH[kmerhash] = cur + 1; // 0 means no hit
+                mKCHits[cur].mID = i;
+                mKCHits[cur].mHit = 0;
+                mKCHits[cur].mKey64 = kmer64;
+                cur++;
+            }
+        }
+    }
+
+    //makeBitAndMask();
 }
 
 bool KmerCollection::eof() {

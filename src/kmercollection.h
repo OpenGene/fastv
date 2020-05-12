@@ -29,6 +29,13 @@ public:
     int mKmerCount;
 };
 
+class KCHit {
+public:
+    uint64 mKey64;
+    uint32 mID;
+    uint32 mHit;
+};
+
 class KmerCollection
 {
 public:
@@ -60,7 +67,9 @@ private:
     vector<int> mKmerCounts;
     vector<KCResult> mResults;
     int mNumber;
-    uint32* mHashCounts;
+    uint32 mUniqueHashNum;
+    uint32* mHashKCH;
+    KCHit* mKCHits;
     string mFilename;
     gzFile mZipFile;
     ifstream mFile;
@@ -69,6 +78,7 @@ private:
     uint32 mIdMask;
     uint32 mCountMax;
     bool mStatDone;
+    uint32 mUniqueNumber;
 };
 
 

@@ -41,7 +41,7 @@ void VirusDetector::report() {
         mKmer->report();
     }
     if(mKmerCollection) {
-        cerr << "Detection result for provided KMER collection:"<<endl;
+        cerr << endl << "Detection result for provided KMER collection:"<<endl;
         mKmerCollection->report();
     }
     if(mGenomes) {
