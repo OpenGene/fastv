@@ -75,11 +75,15 @@ chmod a+x ./fastv
 ```
 ## or compile from source
 ```shell
+# step 1: get the code
 git clone https://github.com/OpenGene/fastv.git
 
-# step 3: build
+# step 2: build
 cd fastv
 make
+
+# step 3: install it to system if you have a sudo permission
+make install
 ```
 
 ## screenshot
