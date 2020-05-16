@@ -1,6 +1,15 @@
 # fastv
 fastv is an ultra-fast tool for identification of SARS-CoV-2 and other microbes from sequencing data. It detects microbial sequences from FASTQ data, generates JSON reports and visualizes the result in HTML reports. This tool can be used to detect viral infectious diseases, like COVID-19. This tool supports both short reads (Illumina, BGI, etc.) and long reads (ONT, PacBio, etc.)
 
+* [Examples](#take-a-quick-glance-of-the-informative-report)
+* [How it works?](#quick-example)
+* [Understand the input](#understand-the-input)
+* [Understand the output](#understand-the-output)
+* [Download or build fastv](#get-fastv)
+* [Screenshot](#screenshot)
+* [Options](#options)
+* [Citation](#citation)
+
 # take a quick glance of the informative report
 * Sample HTML report (Illumina): http://opengene.org/fastv/fastv.html
 * Sample HTML report (ONT): http://opengene.org/fastv/ont.html
@@ -159,3 +168,8 @@ QC and quality pruning options (inherited from fastp: https://github.com/OpenGen
       --umi_prefix                    if specified, an underline will be used to connect prefix and UMI (i.e. prefix=UMI, UMI=AATTCG, final=UMI_AATTCG). No prefix by default (string [=])
       --umi_skip                      if the UMI is in read1/read2, fastv can skip several bases following UMI, default is 0 (int [=0])
 ```
+
+# Citation
+If you use `fastv`, `UniqueKMER` or the pre-generated resources provided by this repository, please cite our work as:
+
+Shifu Chen, Changshou He, Yingqiang Li, Zhicheng Li, Charles E Melancon III. A Computational Toolset for Rapid Identification of SARS-CoV-2, other Viruses, and Microorganisms from Sequencing Data. bioRxiv 2020.05.12.092163; doi: https://doi.org/10.1101/2020.05.12.092163
