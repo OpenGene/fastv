@@ -11,27 +11,24 @@ FastaReader::FastaReader(string faFile, bool forceUpperCase)
     setlocale(LC_ALL,"C");
     ios_base::sync_with_stdio(false);
 
-    mFastaFile = faFile;
+    mFilename = faFile;
     mForceUpperCase = forceUpperCase;
-    if (is_directory(mFastaFile)) {
-        string error_msg = "There is a problem with the provided fasta file: \'";
-        error_msg.append(mFastaFile);
-        error_msg.append("\' is a directory NOT a file...\n");
-        throw invalid_argument(error_msg);
+
+    if (ends_with(mFilename, ".fasta.gz") || ends_with(mFilename, ".fa.gz")){
+        mZipFile = gzopen(mFilename.c_str(), "r");
+        mZipped = true;
     }
-    mFastaFileStream.open( mFastaFile.c_str(),ios::in);
-    // verify that the file can be read
-    if (!mFastaFileStream.is_open()) {
-        string msg = "There is a problem with the provided fasta file: could NOT read ";
-        msg.append(mFastaFile.c_str());
-        msg.append("...\n");
-        throw invalid_argument(msg);
+    else if(ends_with(mFilename, ".fasta") || ends_with(mFilename, ".fa")){
+        mFile.open(mFilename.c_str(), ifstream::in);
+        mZipped = false;
+    } else {
+        error_exit("Not a FASTA file: " + mFilename);
     }
 
     char c;
     // seek to first contig
-    while (mFastaFileStream.get(c) && c != '>') {
-        if (mFastaFileStream.eof()) {
+    while (getChar(c) && c != '>') {
+        if (eof()) {
             break;
         }
     }
@@ -39,13 +36,67 @@ FastaReader::FastaReader(string faFile, bool forceUpperCase)
 
 FastaReader::~FastaReader()
 {
-    if (mFastaFileStream.is_open()) {
-        mFastaFileStream.close();
+    if (mZipped){
+        if (mZipFile){
+            gzclose(mZipFile);
+            mZipFile = NULL;
+        }
     }
+    else {
+        if (mFile.is_open()){
+            mFile.close();
+        }
+    }
+}
+
+bool FastaReader::getLine(char* line, int maxLine){
+    bool status = true;
+    if(mZipped)
+        status = gzgets(mZipFile, line, maxLine);
+    else {
+        mFile.getline(line, maxLine, '\n');
+        status = !mFile.fail();
+    }
+
+    // trim \n, \r or \r\n in the tail
+    int readed = strlen(line);
+    if(readed >=2 ){
+        if(line[readed-1] == '\n' || line[readed-1] == '\r'){
+            line[readed-1] = '\0';
+            if(line[readed-2] == '\r')
+                line[readed-2] = '\0';
+        }
+    }
+
+    return status;
+}
+
+bool FastaReader::eof() {
+    if (mZipped) {
+        return gzeof(mZipFile);
+    } else {
+        return mFile.eof();
+    }
+}
+
+bool FastaReader::getChar(char& c) {
+    bool status = true;
+    if (mZipped) {
+        c = (char)gzgetc(mZipFile);
+        if(c == -1)
+            status = false;
+    } else {
+        mFile.get(c);
+        status = !mFile.fail();
+    }
+    return status;
 }
 
 void FastaReader::readNext()
 {
+    const int maxLine = 1024;
+    char linebuf[maxLine];
+
     mCurrentID = "";
     mCurrentDescription = "";
     mCurrentSequence = "";
@@ -55,8 +106,8 @@ void FastaReader::readNext()
     stringstream ssSeq;
     stringstream ssHeader;
     while(true){
-        mFastaFileStream.get(c);
-        if(c == '>' || mFastaFileStream.eof())
+        getChar(c);
+        if(c == '>' || eof())
             break;
         else {
             if (foundHeader){
@@ -68,10 +119,13 @@ void FastaReader::readNext()
             else
                 ssHeader << c;
         }
-
-        string line = "";
-        getline(mFastaFileStream,line,'\n');
-
+        string line;
+        if(mZipped) {
+            getLine(linebuf, maxLine);
+            line = string(linebuf);
+        } else {
+            getline(mFile,line,'\n');
+        }
 
         if(foundHeader == false) {
             ssHeader << line;
@@ -89,11 +143,11 @@ void FastaReader::readNext()
 }
 
 bool FastaReader::hasNext() {
-    return !mFastaFileStream.eof();
+    return !eof();
 }
 
 void FastaReader::readAll() {
-    while(!mFastaFileStream.eof()){
+    while(!eof()){
         readNext();
         mAllContigs[mCurrentID] = mCurrentSequence;
     }

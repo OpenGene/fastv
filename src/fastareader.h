@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <string>
 #include <map>
+#include "zlib/zlib.h"
 
 using namespace std;
 
@@ -54,11 +55,16 @@ private:
     bool readLine();
     bool endOfLine(char c);
     void setFastaSequenceIdDescription();
+    bool getLine(char* line, int maxLine);
+    bool getChar(char& c);
+    bool eof();
 
 private:
-    string mFastaFile;
-    ifstream mFastaFileStream;
+    string mFilename;
     bool mForceUpperCase;
+    gzFile mZipFile;
+    ifstream mFile;
+    bool mZipped;
 };
 
 
