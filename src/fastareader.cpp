@@ -2,6 +2,7 @@
 #include "fastareader.h"
 #include "util.h"
 #include <sstream>
+#include <string.h>
 
 FastaReader::FastaReader(string faFile, bool forceUpperCase)
 {
