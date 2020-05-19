@@ -15,15 +15,15 @@ FastaReader::FastaReader(string faFile, bool forceUpperCase)
     mFilename = faFile;
     mForceUpperCase = forceUpperCase;
 
-    if (ends_with(mFilename, ".fasta.gz") || ends_with(mFilename, ".fa.gz")){
+    if (ends_with(mFilename, ".fasta.gz") || ends_with(mFilename, ".fa.gz") || ends_with(mFilename, ".fna.gz")){
         mZipFile = gzopen(mFilename.c_str(), "r");
         mZipped = true;
     }
-    else if(ends_with(mFilename, ".fasta") || ends_with(mFilename, ".fa")){
+    else if(ends_with(mFilename, ".fasta") || ends_with(mFilename, ".fa") || ends_with(mFilename, ".fna")){
         mFile.open(mFilename.c_str(), ifstream::in);
         mZipped = false;
     } else {
-        error_exit("Not a FASTA file: " + mFilename);
+        error_exit("FASTA file should have a name (*.fasta, *.fa or *.fna) or (*.fasta.gz, *.fa.gz or *.fna.gz). Not a FASTA file: " + mFilename);
     }
 
     char c;
