@@ -128,6 +128,11 @@ void FastaReader::readNext()
             getline(mFile,line,'\n');
         }
 
+        // fix \r\n issue
+        if(line[line.length()-1] == '\r') {
+            line = line.substr(0, line.length()-1);
+        }
+
         if(foundHeader == false) {
             ssHeader << line;
             foundHeader = true;
