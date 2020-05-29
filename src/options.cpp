@@ -33,7 +33,7 @@ Options::Options(){
     longReadThreshold = 200;
     segmentLength = 100;
     edThreshold = 8;
-    kcCoverageThreshold = 0.1;
+    kcCoverageThreshold = 0.01;
     kcCoverageHighConfidence = 0.9;
     kcMedianHitHighConfidence  = 10;
 }
