@@ -188,6 +188,15 @@ bool Options::validate() {
     if(longReadThreshold < 100 || longReadThreshold > 10000)
         error_exit("long read threshold (--long_read_threshold) should be 100 ~ 10000, suggest 200");
 
+    if(kcCoverageThreshold < 0 || kcCoverageThreshold > 1)
+        error_exit("K-mer collection coverage threshold (--kc_coverage_threshold) should be 0 ~ 1.0, suggest 0.01");
+
+    if(kcCoverageHighConfidence < 0 || kcCoverageHighConfidence > 1)
+        error_exit("K-mer collection high confidence coverage threshold (--kc_high_confidence_coverage_threshold) should be 0 ~ 1.0, suggest 0.9");
+
+    if(kcMedianHitHighConfidence < 0 || kcMedianHitHighConfidence > 10000)
+        error_exit("K-mer collection high confidence median hits threshold (--kc_high_confidence_median_hit_threshold) should be 0 ~ 10000, suggest 5");
+
     if(segmentLength < 50 || segmentLength > 5000)
         error_exit("segment length for splitted long reads (--read_segment_len) should be 50 ~ 5000, suggest 100");
 

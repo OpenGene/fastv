@@ -109,7 +109,7 @@ void KmerCollection::stat(){
     }
 
     for(int id=0; id<mNumber; id++){
-        if(mCoverage[id] >= mOptions->kcCoverageThreshold && mKmerCounts[id] > 10) {
+        if(mCoverage[id] > mOptions->kcCoverageThreshold && mKmerCounts[id] > 10) {
             KCResult kcr;
             kcr.mName = mNames[id];
             kcr.mHit = mHits[id];
@@ -321,7 +321,7 @@ void KmerCollection::reportJSON(ofstream& ofs) {
 }
 
 bool KmerCollection::isHighConfidence(KCResult kcr) {
-    if(kcr.mCoverage >= mOptions->kcCoverageHighConfidence && kcr.mMedianHit >= mOptions->kcMedianHitHighConfidence)
+    if(kcr.mCoverage > mOptions->kcCoverageHighConfidence && kcr.mMedianHit > mOptions->kcMedianHitHighConfidence)
         return true;
     else
         return false;
@@ -359,8 +359,8 @@ void KmerCollection::reportHTML(ofstream& ofs) {
 
     if(highConfidence != mResults.size())  {
         ofs << "<div class='subsection_title' style='font-size:12px;font-weight:normal;color:#223399;' onclick=showOrHide('low_confidence_kcr')>+ Show " << mResults.size() - highConfidence;
-        ofs << " more with low confidence (coverage < " << mOptions->kcCoverageHighConfidence *  100;
-        ofs << "% or median depth < " << mOptions->kcMedianHitHighConfidence;
+        ofs << " more with low confidence (coverage <= " << mOptions->kcCoverageHighConfidence *  100;
+        ofs << "% or median depth <= " << mOptions->kcMedianHitHighConfidence;
         ofs << ") ▼ </div>\n";
         ofs << "<table id='low_confidence_kcr' style='display:none;width:100%;' class='summary_table'>\n";
         ofs <<  "<tr style='background:#cccccc'> <td>Genome</td><td>Coverage</td><td>Median depth</td><td>Mean depth</td><td>Remark</td>  </tr>"  << endl;
