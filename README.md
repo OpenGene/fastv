@@ -108,7 +108,7 @@ Key options:
       --bin_size                                   For coverage calculation. The genome is splitted to many bins, with each bin has a length of bin_size (1 ~ 100000), default 0 means adaptive. (int [=0])
       --kc_coverage_threshold                      For each genome in the k-mer collection FASTA, report it when its coverage > kc_coverage_threshold. Default is 0.01. (double [=0.01])
       --kc_high_confidence_coverage_threshold      For each genome in the k-mer collection FASTA, report it as high confidence when its coverage > kc_high_confidence_coverage_threshold. Default is 0.9. (double [=0.9])
-      --kc_high_confidence_median_hit_threshold    For each genome in the k-mer collection FASTA, report it as high confidence when its median hits > kc_high_confidence_median_hit_threshold. Default is 10. (int [=10])
+      --kc_high_confidence_median_hit_threshold    For each genome in the k-mer collection FASTA, report it as high confidence when its median hits > kc_high_confidence_median_hit_threshold. Default is 5. (int [=5])
   -j, --json                                       the json format report file name (string [=fastv.json])
   -h, --html                                       the html format report file name (string [=fastv.html])
   -R, --report_title                               should be quoted with ' or ", default is "fastv report" (string [=fastv report])
