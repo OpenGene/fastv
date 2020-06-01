@@ -17,10 +17,11 @@ fastv is an ultra-fast tool for identification of SARS-CoV-2 and other microbes 
 * Sample HTML report (ONT): http://opengene.org/fastv/ont.html
 * Sample JSON report: http://opengene.org/fastv/fastv.json
 
-# quick example
+# quick example for SARS-CoV-2 identification
 * download FASTQ file for testing: http://opengene.org/fastv/testdata.fq.gz
 * get fastv and use following command for testing: 
 ```shell
+# make sure that SARS-CoV-2.kmer.fa and SARS-CoV-2.genomes.fa are in the ./data folder
 ./fastv -i testdata.fq.gz
 ```
 
@@ -186,7 +187,7 @@ Shifu Chen, Changshou He, Yingqiang Li, Zhicheng Li, Charles E Melancon III. A C
 
 # tutorials
 ## analyze metagenomics sequencing (mNGS) data
-1. install fastv
+1. download or build fastv
 2. download the k-mer collection for all viruses and microorganisms that have reference genomes in NCBI RefSeq:
 ```shell
 wget http://opengene.org/microbial.kc.fasta.gz
@@ -204,3 +205,24 @@ See an example: http://opengene.org/fastv/mngs.html
 ![image](http://www.opengene.org/fastv/mngs.json.png)   
 The result is presented in a list: `kmer_collection_scan_result`.   
 See an example: http://opengene.org/fastv/mngs.json
+
+## identify SARS-CoV-2
+1. download or build fastv
+2. download the `k-mer` file and `genomes` file for SARS-CoV-2
+```shell
+wget http://opengene.org/fastv/data/SARS-CoV-2.kmer.fa
+wget http://opengene.org/fastv/data/SARS-CoV-2.genomes.fa
+```
+3. run fastv:
+```shell
+./fastv -i filename.fastq.gz -k SARS-CoV-2.kmer.fa -g SARS-CoV-2.genomes.fa
+```
+4. check the result in HTML report
+![image](http://www.opengene.org/fastv/sarscov2.html.png)
+The detection result is presented in the section `Detection result for target unique k-mer file`. The genome coverage result is presented in the section `Genome coverages for file`.   
+See an example: http://opengene.org/fastv/sarscov2.html
+
+5. check the result in JSON report
+![image](http://www.opengene.org/fastv/sarscov2.json.png)   
+The result is presented in: `kmer_detection_result`.   
+See an example: http://opengene.org/fastv/sarscov2.json
