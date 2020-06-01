@@ -143,7 +143,7 @@ bool KmerCollection::add(uint64 kmer64) {
 void KmerCollection::init()
 {
     if(mOptions->verbose)
-        loginfo("Initializing KMER collection: " + mFilename + "\n");
+        loginfo("Initializing k-mer collection: " + mFilename + "\n");
     if (ends_with(mFilename, ".fasta.gz") || ends_with(mFilename, ".fa.gz")){
         mZipFile = gzopen(mFilename.c_str(), "r");
         mZipped = true;
@@ -201,11 +201,11 @@ void KmerCollection::init()
                 mOptions->kmerKeyLen = seq.length();
 
             if(mOptions->kmerKeyLen > 32)
-                error_exit("KMER key length cannot be >32: " + seq);
+                error_exit("k-mer key length cannot be >32: " + seq);
         }
 
         if(seq.length() != mOptions->kmerKeyLen) {
-            cerr << "KMER length must be " << mOptions->kmerKeyLen << ", skipped " << seq << endl;
+            cerr << "k-mer length must be " << mOptions->kmerKeyLen << ", skipped " << seq << endl;
             continue;
         }
 
@@ -248,7 +248,7 @@ void KmerCollection::init()
             // means unique
             if(index == i+1) {
                 if(cur >= mUniqueHashNum)
-                    error_exit("Uninque number incorrectly calculated in KMER collection initialization.");
+                    error_exit("Uninque number incorrectly calculated in k-mer collection initialization.");
                 mHashKCH[kmerhash] = cur + 1; // 0 means no hit
                 mKCHits[cur].mID = i;
                 mKCHits[cur].mHit = 0;
@@ -291,7 +291,7 @@ void KmerCollection::report() {
         cerr <<  endl;
     }
     if(highConfidenceNum == 0)
-        cerr << "No high confidence KMER coverage found." << endl;
+        cerr << "No high confidence k-mer coverage found." << endl;
 }
 
 void KmerCollection::reportJSON(ofstream& ofs) {
@@ -355,7 +355,7 @@ void KmerCollection::reportHTML(ofstream& ofs) {
         ofs << "</tr>" <<  endl;
     }
     if(highConfidence == 0)
-        ofs << "<tr> <td colspan=6 style='text-align:center;'>No high confidence KMER coverage found. </td></tr>" << endl;
+        ofs << "<tr> <td colspan=6 style='text-align:center;'>No high confidence k-mer coverage found. </td></tr>" << endl;
     ofs << "</table>\n";
 
     if(highConfidence != mResults.size())  {
