@@ -217,12 +217,16 @@ wget http://opengene.org/fastv/data/SARS-CoV-2.genomes.fa
 ```shell
 ./fastv -i filename.fastq.gz -k SARS-CoV-2.kmer.fa -g SARS-CoV-2.genomes.fa
 ```
-4. check the result in HTML report
+4. check the result in SHELL
+![image](http://www.opengene.org/fastv/sarscov2.shell.png)
+The detection result will be `POSITIVE` if the SARS-CoV-2 coverage is higher than the threshold.   
+
+5. check the result in HTML report
 ![image](http://www.opengene.org/fastv/sarscov2.html.png)
 The detection result is presented in the section `Detection result for target unique k-mer file`. The genome coverage result is presented in the section `Genome coverages for file`.   
 See an example: http://opengene.org/fastv/sarscov2.html
 
-5. check the result in JSON report
+6. check the result in JSON report
 ![image](http://www.opengene.org/fastv/sarscov2.json.png)   
 The result is presented in: `kmer_detection_result`.   
 See an example: http://opengene.org/fastv/sarscov2.json
