@@ -10,7 +10,8 @@ fastv is an ultra-fast tool for identification of SARS-CoV-2 and other microbes 
 * [Options](#options)
 * [Citation](#citation)
 * [Tutorials](#tutorials)
-* [----mNGS data analysis](#analyze-metagenomics-sequencing-mngs-data)
+* [---- mNGS data analysis](#analyze-metagenomics-sequencing-mngs-data)
+* [---- SARS-CoV-2 identification](#identify-sars-cov-2)
 
 # take a quick glance of the informative report
 * Sample HTML report (Illumina): http://opengene.org/fastv/fastv.html
