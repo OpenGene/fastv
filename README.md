@@ -9,6 +9,7 @@ fastv is an ultra-fast tool for identification of SARS-CoV-2 and other microbes 
 * [Screenshot](#screenshot)
 * [Options](#options)
 * [Citation](#citation)
+* [Tutorials](#tutorials)
 
 # take a quick glance of the informative report
 * Sample HTML report (Illumina): http://opengene.org/fastv/fastv.html
@@ -177,7 +178,28 @@ QC and quality pruning options (inherited from fastp: https://github.com/OpenGen
       --umi_skip                      if the UMI is in read1/read2, fastv can skip several bases following UMI, default is 0 (int [=0])
 ```
 
-# Citation
+# citation
 If you use `fastv`, `UniqueKMER` or the pre-generated resources provided by this repository, please cite our work as:
 
 Shifu Chen, Changshou He, Yingqiang Li, Zhicheng Li, Charles E Melancon III. A Computational Toolset for Rapid Identification of SARS-CoV-2, other Viruses, and Microorganisms from Sequencing Data. bioRxiv 2020.05.12.092163; doi: https://doi.org/10.1101/2020.05.12.092163
+
+# tutorials
+## analyze metagenomics sequencing (mNGS) data
+1. install fastv
+2. download the k-mer collection for all viruses and microorganisms that have reference genomes in NCBI RefSeq:
+```shell
+wget http://opengene.org/microbial.kc.fasta.gz
+```
+3. run fastv:
+```shell
+./fastv -i filename.fastq.gz -c microbial.kc.fasta.gz
+```
+4. check the result in HTML report
+![image](http://www.opengene.org/fastv/mngs.html.png)
+The result is presented in the section: `Detection result for k-mer collection file`.   
+See an example: http://opengene.org/fastv/mngs.html
+
+5. check the result in JSON report
+![image](http://www.opengene.org/fastv/mngs.json.png)   
+The result is presented in a list: `kmer_collection_scan_result`.   
+See an example: http://opengene.org/fastv/mngs.json
