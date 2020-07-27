@@ -108,6 +108,9 @@ void FastaReader::readNext()
     stringstream ssHeader;
     while(true){
         getChar(c);
+        // skip blank line
+        if(c == '\n' && !eof())
+            continue;
         if(c == '>' || eof())
             break;
         else {
@@ -129,8 +132,10 @@ void FastaReader::readNext()
         }
 
         // fix \r\n issue
-        if(line[line.length()-1] == '\r') {
-            line = line.substr(0, line.length()-1);
+        if(line.length()>0)  {
+            if(line[line.length()-1] == '\r') {
+                line = line.substr(0, line.length()-1);
+            }
         }
 
         if(foundHeader == false) {
