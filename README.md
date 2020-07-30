@@ -234,7 +234,7 @@ The result is presented in: `kmer_detection_result`.
 See an example: http://opengene.org/fastv/sarscov2.json
 
 ## influenza A virus subtyping
-Influenza A viruses are divided into subtypes on the basis of two proteins on the surface of the virus: hemagglutinin (HA) and neuraminidase (NA). For example, “H5N1” virus has an HA 5 protein and an NA 1 protein. `fastv` can be used to identify the HA type and NA type for influenza A virus from sequencing data.
+Influenza A viruses are divided into subtypes on the basis of two proteins on the surface of the virus: hemagglutinin (HA) and neuraminidase (NA). For example, “H5N1” virus has an hemagglutinin type 5 protein and an neuraminidase type 1 protein. `fastv` can be used to identify the hemagglutinin type and neuraminidase type for influenza A virus from sequencing data.
 
 1. download or build fastv
 2. download the k-mer collection for all viruses and microorganisms that have reference genomes in NCBI RefSeq:
