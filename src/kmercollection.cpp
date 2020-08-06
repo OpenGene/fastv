@@ -338,7 +338,7 @@ bool KmerCollection::isHighConfidence(KCResult kcr) {
 
 void KmerCollection::reportHTML(ofstream& ofs) {
     ofs << "<table class='summary_table' style='width:100%'>\n";
-    ofs <<  "<tr style='background:#cccccc'> <td>Genome</td><td>K-mer hits</td><td>Coverage</td><td>Median depth</td><td>Mean depth</td><td>Remark</td>  </tr>"  << endl;
+    ofs <<  "<tr style='background:#cccccc'> <td>Genome</td><td>K-mer hits</td><td>Unique reads</td><td>Coverage</td><td>Median depth</td><td>Mean depth</td><td>Remark</td>  </tr>"  << endl;
 
     int highConfidence = 0;
     for(int i=0; i<mResults.size(); i++) {
@@ -355,12 +355,13 @@ void KmerCollection::reportHTML(ofstream& ofs) {
         else if(kcr.mName ==  "NC_045512.2 Wuhan seafood market pneumonia virus isolate Wuhan-Hu-1, complete genome")
             remark = "SARS-CoV-2";
         ofs << "<tr>";
-        ofs << "<td width=56%>" << kcr.mName << " (" << kcr.mKmerCount << " k-mer keys)</td>";
+        ofs << "<td width=52%>" << kcr.mName << " (" << kcr.mKmerCount << " k-mer keys)</td>";
         ofs << "<td width=8%>" << kcr.mHit << "</td>";
+        ofs << "<td width=8%>" << kcr.mUniqueReads << "</td>";
         ofs << "<td width=10%>" << kcr.mCoverage * 100 << "%</td>";
         ofs << "<td width=8%>" << kcr.mMedianHit << "</td>";
         ofs << "<td width=8%>" << kcr.mMeanHit << "</td>";
-        ofs << "<td width=10%>" << remark << "</td>";
+        ofs << "<td width=6%>" << remark << "</td>";
         ofs << "</tr>" <<  endl;
     }
     if(highConfidence == 0)
@@ -373,7 +374,7 @@ void KmerCollection::reportHTML(ofstream& ofs) {
         ofs << "% or median depth <= " << mOptions->kcMedianHitHighConfidence;
         ofs << ") ▼ </div>\n";
         ofs << "<table id='low_confidence_kcr' style='display:none;width:100%;' class='summary_table'>\n";
-        ofs <<  "<tr style='background:#cccccc'> <td>Genome</td><td>K-mer hits</td><td>Coverage</td><td>Median depth</td><td>Mean depth</td><td>Remark</td>  </tr>"  << endl;
+        ofs <<  "<tr style='background:#cccccc'> <td>Genome</td><td>K-mer hits</td><td>Unique reads</td><td>Coverage</td><td>Median depth</td><td>Mean depth</td><td>Remark</td>  </tr>"  << endl;
 
         int highConfidence = 0;
         for(int i=0; i<mResults.size(); i++) {
@@ -388,12 +389,13 @@ void KmerCollection::reportHTML(ofstream& ofs) {
             else if(kcr.mName ==  "NC_045512.2 Wuhan seafood market pneumonia virus isolate Wuhan-Hu-1, complete genome")
                 remark = "SARS-CoV-2";
             ofs << "<tr>";
-            ofs << "<td width=56%>" << kcr.mName << " (" << kcr.mKmerCount << " k-mer keys)</td>";
+            ofs << "<td width=52%>" << kcr.mName << " (" << kcr.mKmerCount << " k-mer keys)</td>";
             ofs << "<td width=8%>" << kcr.mHit << "</td>";
+            ofs << "<td width=8%>" << kcr.mUniqueReads << "</td>";
             ofs << "<td width=10%>" << kcr.mCoverage * 100 << "%</td>";
             ofs << "<td width=8%>" << kcr.mMedianHit << "</td>";
             ofs << "<td width=8%>" << kcr.mMeanHit << "</td>";
-            ofs << "<td width=10%>" << remark << "</td>";
+            ofs << "<td width=6%>" << remark << "</td>";
             ofs << "</tr>" <<  endl;
         }
         ofs << "</table>\n";
