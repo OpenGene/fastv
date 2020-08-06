@@ -75,6 +75,9 @@ bool VirusDetector::scan(string& seq) {
     int keylen = mOptions->kmerKeyLen;
     int blankBits = 64 - 2*keylen;
 
+    bool onlyHitOneGenome = true;
+    uint32 lastGenomeID = 0;
+
     if(seq.length() < keylen)
         return false;
 
@@ -144,9 +147,17 @@ bool VirusDetector::scan(string& seq) {
         }
 
         if(mKmerCollection) {
-            mKmerCollection->add(key);
+            uint32 gid = mKmerCollection->add(key);
+            if(gid > 0) {
+                if(lastGenomeID!=0 && gid!=lastGenomeID)
+                    onlyHitOneGenome = false;
+                lastGenomeID = gid;
+            }
         }
     }
+
+    if(mKmerCollection && onlyHitOneGenome && lastGenomeID>0)
+        mKmerCollection->addGenomeRead(lastGenomeID);
 
     bool wellMapped = false;
     if(needAlignment && mGenomes)

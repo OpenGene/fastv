@@ -27,6 +27,7 @@ public:
     double mMeanHit;
     double mCoverage;
     int mKmerCount;
+    int mUniqueReads;
 };
 
 class KCHit {
@@ -45,7 +46,8 @@ public:
     void report();
     void reportJSON(ofstream& ofs);
     void reportHTML(ofstream& ofs);
-    bool add(uint64 kmer64);
+    uint32 add(uint64 kmer64);
+    void addGenomeRead(uint32 genomeID);
 
     uint32 packIdCount(uint32 id, uint32 count);
     void unpackIdCount(uint32 data,uint32& id, uint32& count);
@@ -65,6 +67,7 @@ private:
     vector<double> mMeanHits;
     vector<double> mCoverage;
     vector<int> mKmerCounts;
+    vector<int> mGenomeReads;
     vector<KCResult> mResults;
     int mNumber;
     uint32 mUniqueHashNum;

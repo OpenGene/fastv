@@ -117,6 +117,7 @@ void KmerCollection::stat(){
             kcr.mMedianHit = mMedianHits[id];
             kcr.mMeanHit = mMeanHits[id];
             kcr.mKmerCount = mKmerCounts[id];
+            kcr.mUniqueReads = mGenomeReads[id];
 
             mResults.push_back(kcr);
         }
@@ -127,17 +128,22 @@ void KmerCollection::stat(){
     mStatDone = true;
 }
 
-bool KmerCollection::add(uint64 kmer64) {
+uint32 KmerCollection::add(uint64 kmer64) {
     uint64 kmerhash = makeHash(kmer64);
     uint32 index = mHashKCH[kmerhash];
     if(index != 0 && index != COLLISION_FLAG) {
         if(mKCHits[index - 1].mKey64 == kmer64) {
             mKCHits[index - 1].mHit++;
-            return true;
+            return mKCHits[index - 1].mID + 1;
         } else
-            return false;
+            return 0;
     } else
-        return false;
+        return 0;
+}
+
+void KmerCollection::addGenomeRead(uint32 genomeID) {
+    if(genomeID-1 < mGenomeReads.size())
+        mGenomeReads[genomeID-1]++;
 }
 
 void KmerCollection::init()
@@ -189,6 +195,7 @@ void KmerCollection::init()
             mMeanHits.push_back(0.0);
             mCoverage.push_back(0.0);
             mMedianHits.push_back(0);
+            mGenomeReads.push_back(0);
             mNumber++;
             //cerr<<mNumber<<": " << linestr << endl;
             continue;
@@ -288,6 +295,7 @@ void KmerCollection::report() {
         cerr << ",kmer_count:" << kcr.mKmerCount;
         cerr << ",median_depth:" << kcr.mMedianHit;
         cerr << ",mean_depth:" << kcr.mMeanHit;
+        cerr << ",unique_reads:" << kcr.mUniqueReads;
         cerr <<  endl;
     }
     if(highConfidenceNum == 0)
@@ -314,6 +322,7 @@ void KmerCollection::reportJSON(ofstream& ofs) {
         ofs << ",\"kmer_hits\":" << kcr.mHit;
         ofs << ",\"median_depth\":" << kcr.mMedianHit;
         ofs << ",\"mean_depth\":" << kcr.mMeanHit;
+        ofs << ",\"unique_reads\":" << kcr.mUniqueReads;
         ofs << "}";
     }
 
