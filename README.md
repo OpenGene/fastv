@@ -93,7 +93,7 @@ make install
 ```
 
 ## screenshot
-![image](http://www.opengene.org/fastv/fastv-0504.png)   
+![image](http://www.opengene.org/fastv/fastv-0801.jpg)   
 
 # options
 Key options:
