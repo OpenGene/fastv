@@ -101,7 +101,7 @@ void Genomes::initBloomFilter() {
     memset(mBloomFilterArray, 0, BLOOM_FILTER_LENGTH * sizeof(char));
 
     //update bloom filter array
-    const uint64 bloomFilterFactors[3] = {1713137323, 371371377, 7341234131};
+    const long long int bloomFilterFactors[3] = {1713137323, 371371377, 7341234131};
 
     unordered_map<uint64, list<uint32>>::iterator iter;
     for(iter = mKmerTable.begin(); iter != mKmerTable.end(); iter++) {
@@ -212,7 +212,7 @@ void Genomes::addKmer(uint64 key, uint32 id, uint32 pos) {
 
 bool Genomes::hasKey(uint64 key) {
     // check bloom filter
-    const uint64 bloomFilterFactors[3] = {1713137323, 371371377, 7341234131};
+    const long long int bloomFilterFactors[3] = {1713137323, 371371377, 7341234131};
     for(int b=0; b<3; b++) {
         if(mBloomFilterArray[(bloomFilterFactors[b] * key) & (BLOOM_FILTER_LENGTH-1)] == 0 )
             return false;
