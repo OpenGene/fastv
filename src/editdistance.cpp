@@ -22,6 +22,7 @@
 #include <vector>
 #include <iostream>
 #include <bitset>
+#include <time.h>
 
 #include "editdistance.h"
 
